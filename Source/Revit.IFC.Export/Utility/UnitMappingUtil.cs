@@ -715,7 +715,7 @@ namespace Revit.IFC.Export.Utility
 
          string cobieName;
          if (!CobieUnitNameMapping.TryGetValue(unitName, out cobieName))
-            cobieName = unitName.ToLower();
+            cobieName = unitName.ToLowerInvariant();
 
          return cobieName;
       }

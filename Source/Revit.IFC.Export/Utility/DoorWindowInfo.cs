@@ -524,7 +524,7 @@ namespace Revit.IFC.Export.Utility
                   DoorOperationTypeString = ReverseDoorStyleOperation(DoorOperationTypeString);
             }
 
-            if (string.Compare(DoorOperationTypeString, "USERDEFINED", true) == 0)
+            if (string.Equals(DoorOperationTypeString, "USERDEFINED", StringComparison.OrdinalIgnoreCase))
             {
                (_, string userDefinedOperationType) = ParameterUtil.GetStringValueFromElementOrSymbol(doorType, null, false, 
                   "UserDefinedOperationType");

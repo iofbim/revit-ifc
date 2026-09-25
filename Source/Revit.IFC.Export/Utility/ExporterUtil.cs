@@ -867,9 +867,9 @@ namespace Revit.IFC.Export.Utility
          if ((overrideCategory?.Id.Value ?? -1) == (int) BuiltInCategory.OST_MassFloor)
          {
             string className = GetIFCEntityNameFromExportTable(overrideCategory);
-            if (string.Compare(className, "IfcSlab", true) == 0)
+            if (string.Equals(className, "IfcSlab", StringComparison.OrdinalIgnoreCase))
                return "FLOOR";
-            if (string.Compare(className, "IfcCovering", true) == 0)
+            if (string.Equals(className, "IfcCovering", StringComparison.OrdinalIgnoreCase))
                return "FLOORING";
          }
 
@@ -1448,7 +1448,7 @@ namespace Revit.IFC.Export.Utility
 
       private static bool IsTypeUndefined(string predefinedType)
       {
-         return string.IsNullOrWhiteSpace(predefinedType) || string.Compare(predefinedType, "NOTDEFINED", true) == 0;
+         return string.IsNullOrWhiteSpace(predefinedType) || string.Equals(predefinedType, "NOTDEFINED", StringComparison.OrdinalIgnoreCase);
       }
 
       /// <summary>
@@ -1474,7 +1474,7 @@ namespace Revit.IFC.Export.Utility
 
          // Only instance entities can process instance types, but both instance and type entities can process type types.
          string objectType = null;
-         if (string.Compare(exportInfo.PredefinedType, "USERDEFINED", true) == 0)
+         if (string.Equals(exportInfo.PredefinedType, "USERDEFINED", StringComparison.OrdinalIgnoreCase))
          {
             bool isTypeHnd = IFCAnyHandleUtil.IsSubTypeOf(prodHnd, IFCEntityType.IfcElementType);
             objectType = IFCAnyHandleUtil.GetStringAttribute(prodHnd, isTypeHnd ? "ElementType" : "ObjectType");
@@ -1915,7 +1915,7 @@ namespace Revit.IFC.Export.Utility
       /// <returns>True if the enumTypeValue is null, empty, or set to "NOTDEFINED".</returns>
       public static bool IsNotDefined(string enumTypeValue)
       {
-         return (string.IsNullOrWhiteSpace(enumTypeValue) || (string.Compare(enumTypeValue, "NOTDEFINED", true) == 0));
+         return (string.IsNullOrWhiteSpace(enumTypeValue) || (string.Equals(enumTypeValue, "NOTDEFINED", StringComparison.OrdinalIgnoreCase)));
       }
 
       /// <summary>

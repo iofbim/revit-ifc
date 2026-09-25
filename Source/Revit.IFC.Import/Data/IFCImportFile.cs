@@ -1162,11 +1162,11 @@ namespace Revit.IFC.Import.Data
 
          IFCFile ifcFile = null;
          string fileExt = Path.GetExtension(path);
-         if (string.Compare(fileExt, ".ifc", true) == 0)
+         if (string.Equals(fileExt, ".ifc", StringComparison.OrdinalIgnoreCase))
             ifcFile = CreateIFCFileFromIFC(path, out schemaVersion);
-         else if (string.Compare(fileExt, ".ifcxml", true) == 0)
+         else if (string.Equals(fileExt, ".ifcxml", StringComparison.OrdinalIgnoreCase))
             ifcFile = CreateIFCFileFromIFCXML(path, out schemaVersion);
-         else if (string.Compare(fileExt, ".ifczip", true) == 0)
+         else if (string.Equals(fileExt, ".ifczip", StringComparison.OrdinalIgnoreCase))
             ifcFile = CreateIFCFileFromIFCZIP(path, out schemaVersion);
          else
             throw new ArgumentException("Unknown file format");

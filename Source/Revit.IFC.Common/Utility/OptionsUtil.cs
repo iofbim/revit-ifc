@@ -414,7 +414,7 @@ namespace Revit.IFC.Common.Utility
                }
                else if (reader.Name.Equals("Axis", StringComparison.InvariantCultureIgnoreCase))
                {
-                  uom = reader.GetAttribute("uom").ToUpper();
+                  uom = reader.GetAttribute("uom").ToUpperInvariant();
                   uom = uom.Replace("METER", "METRE");
                }
             }

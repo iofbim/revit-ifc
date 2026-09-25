@@ -339,7 +339,7 @@ namespace BIM.IFC.Export.UI
 
                         string sGUID = GUIDUtil.GetSimpleElementIFCGUID(linkInstance);
 
-                        string sGUIDlower = sGUID.ToLower();
+                        string sGUIDlower = sGUID.ToLowerInvariant();
 
                         while (existingGUIDs.Contains(sGUIDlower))
                         {
@@ -680,7 +680,7 @@ namespace BIM.IFC.Export.UI
 
                //if link was an IFC file then make a different formating to the file name
                int extensionStart = linkPathName.LastIndexOf('.');
-               string extension = (extensionStart >= 0) ? linkPathName.Substring(extensionStart + 1).ToLower() : null;
+               string extension = (extensionStart >= 0) ? linkPathName.Substring(extensionStart + 1).ToLowerInvariant() : null;
                if (extension != null && (extension == "ifc" || extension == "ifcxml" || extension == "ifczip"))
                {
                   //get output path and add to the new file name 

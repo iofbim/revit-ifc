@@ -517,11 +517,11 @@ namespace Revit.IFC.Export.Utility
          string parameterName = paramName.name().GetText().Replace("(", "").Replace(")", "").Replace("'", "").Replace("\"", "");     // Remove the brackets
 
          // Special parameter (not actual parameter in Revit for Name and UniqueId string)
-         if (parameterName.Equals("Name", StringComparison.CurrentCultureIgnoreCase))
+         if (parameterName.Equals("Name", StringComparison.OrdinalIgnoreCase))
          {
             parValue = elem.Name;
          }
-         else if (parameterName.Equals("UniqueId", StringComparison.CurrentCultureIgnoreCase))
+         else if (parameterName.Equals("UniqueId", StringComparison.OrdinalIgnoreCase))
          {
             parValue = elem.UniqueId;
          }

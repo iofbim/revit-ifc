@@ -100,13 +100,17 @@ namespace Revit.IFC.Common.Utility
                      IList<string> enumValueList = new List<string>();
                      foreach (XmlSchemaEnumerationFacet enumFacet in enums.Facets)
                      {
+                        // Note: the IFC XML schema stores enumeration facets in lower case (e.g. "ceiling").
+                        // Use the invariant culture for the conversion: with a Turkish culture, "ceiling".ToUpper()
+                        // produces "CEİLİNG" (dotted capital I), which no longer matches the IFC enum values and
+                        // breaks predefined type validation and the entity/predefined type selection UI.
                         if (theTree.PredefinedTypeEnumDict.ContainsKey(enumName))
                         {
-                           theTree.PredefinedTypeEnumDict[enumName].Add(enumFacet.Value.ToUpper());
+                           theTree.PredefinedTypeEnumDict[enumName].Add(enumFacet.Value.ToUpperInvariant());
                         }
                         else
                         {
-                           enumValueList.Add(enumFacet.Value.ToUpper());
+                           enumValueList.Add(enumFacet.Value.ToUpperInvariant());
                         }
                      }
                      if (enumValueList.Count > 0)

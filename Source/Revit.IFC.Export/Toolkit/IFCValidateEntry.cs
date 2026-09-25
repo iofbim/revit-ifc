@@ -40,7 +40,7 @@ namespace Revit.IFC.Export.Toolkit
          if (version < IFCVersion.IFC4 || string.IsNullOrEmpty(theTypeEnumStr) || string.IsNullOrEmpty(predefinedType))
             return false;
 
-         (string, string) valueToCheck = (theTypeEnumStr.ToUpper(), predefinedType.ToUpper());
+         (string, string) valueToCheck = (theTypeEnumStr.ToUpperInvariant(), predefinedType.ToUpperInvariant());
          return (version == IFCVersion.IFC4) ? DeprecatedValues4.Contains(valueToCheck) : DeprecatedValues4x3.Contains(valueToCheck);
       }
 
@@ -118,7 +118,7 @@ namespace Revit.IFC.Export.Toolkit
          }
 
          if (!string.IsNullOrEmpty(typeName) && 
-            (string.Compare(typeName, "NotDefined", true) != 0 || string.IsNullOrEmpty(defaultValue)))
+            (!string.Equals(typeName, "NotDefined", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(defaultValue)))
          {
             if (ValidateStrEnum<TEnum>(typeName) != null)
                return typeName;

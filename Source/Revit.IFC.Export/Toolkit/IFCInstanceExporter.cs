@@ -4827,7 +4827,7 @@ namespace Revit.IFC.Export.Toolkit
             {
                string validatedOperationType = IFCValidateEntry.ValidateStrEnum<IFC4.IFCDoorTypeOperation>(operationType);
                IFCAnyHandleUtil.SetAttribute(door, "OperationType", validatedOperationType, true);
-               if (string.Compare(validatedOperationType, "USERDEFINED", true) == 0 && !string.IsNullOrEmpty(userDefinedOperationType))
+               if (string.Equals(validatedOperationType, "USERDEFINED", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(userDefinedOperationType))
                   IFCAnyHandleUtil.SetAttribute(door, "UserDefinedOperationType", userDefinedOperationType);
             }
          }
@@ -5077,7 +5077,7 @@ namespace Revit.IFC.Export.Toolkit
 
          if (!ExporterCacheManager.ExportOptionsCache.ExportAsReferenceView)
             IFCAnyHandleUtil.SetAttribute(doorType, "ParameterTakesPrecedence", parameterTakesPrecedence);
-         if (string.Compare(validatedOperationType, "USERDEFINED", true) == 0 && !string.IsNullOrEmpty(userDefinedOperationType))
+         if (string.Equals(validatedOperationType, "USERDEFINED", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(userDefinedOperationType))
             IFCAnyHandleUtil.SetAttribute(doorType, "UserDefinedOperationType", userDefinedOperationType);
 
          SetElementType(doorType, revitType, ref validatedPreDefinedType, null, guid, propertySets, representationMaps);
@@ -5151,7 +5151,7 @@ namespace Revit.IFC.Export.Toolkit
 
          if (!ExporterCacheManager.ExportOptionsCache.ExportAsReferenceView)
             IFCAnyHandleUtil.SetAttribute(windowType, "ParameterTakesPrecedence", paramTakesPrecedence);
-         if (string.Compare(validatedPartitioningType, "USERDEFINED", true) == 0 && !string.IsNullOrEmpty(userDefinedPartitioningType))
+         if (string.Equals(validatedPartitioningType, "USERDEFINED", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(userDefinedPartitioningType))
             IFCAnyHandleUtil.SetAttribute(windowType, "UserDefinedPartitioningType", userDefinedPartitioningType);
          
          SetElementType(windowType, revitType, ref validatedPreDefinedType, null, guid, propertySets, representationMaps);
@@ -6250,7 +6250,7 @@ namespace Revit.IFC.Export.Toolkit
             {
                string validatedType = IFCValidateEntry.ValidateStrEnum<IFC4.IFCWindowTypePartitioning>(partitioningType);
                IFCAnyHandleUtil.SetAttribute(window, "PartitioningType", validatedType, true);
-               if (string.Compare(partitioningType, "UserDefined", true) == 0 && !string.IsNullOrEmpty(userDefinedPartitioningType))
+               if (string.Equals(partitioningType, "UserDefined", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(userDefinedPartitioningType))
                   IFCAnyHandleUtil.SetAttribute(window, "UserDefinedPartitioningType", userDefinedPartitioningType);
             }
          }
@@ -7138,11 +7138,11 @@ namespace Revit.IFC.Export.Toolkit
          if (ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4)
             return false;
 
-         if (string.Compare(theEnumType, "IfcWallType", true) == 0)
+         if (string.Equals(theEnumType, "IfcWallType", StringComparison.OrdinalIgnoreCase))
          {
-            if ((string.Compare(validatedString, "STANDARD", true) == 0) ||
-               (string.Compare(validatedString, "POLYGONAL", true) == 0) ||
-               (string.Compare(validatedString, "ELEMENTEDWALL", true) == 0))
+            if ((string.Equals(validatedString, "STANDARD", StringComparison.OrdinalIgnoreCase)) ||
+               (string.Equals(validatedString, "POLYGONAL", StringComparison.OrdinalIgnoreCase)) ||
+               (string.Equals(validatedString, "ELEMENTEDWALL", StringComparison.OrdinalIgnoreCase)))
                return true;
          }
 

@@ -482,7 +482,7 @@ namespace BIM.IFC.Export.UI
             }
 
             // Check for a valid IFC File format, if it does not exists, append the default IFC file format to export to the file
-            if (Path.GetExtension(textBoxSetupFileName.Text).IndexOf(Properties.Resources.IFC, StringComparison.CurrentCultureIgnoreCase) == -1)
+            if (Path.GetExtension(textBoxSetupFileName.Text).IndexOf(Properties.Resources.IFC, StringComparison.OrdinalIgnoreCase) == -1)
                textBoxSetupFileName.Text = textBoxSetupFileName.Text.ToString() + "." + m_defaultExt;
 
             // Prompt for overwriting the file if it is already present in the directory.
@@ -718,7 +718,7 @@ namespace BIM.IFC.Export.UI
          string filePathName = textBoxSetupFileName.Text;
          // If the file extension does not contain a valid IFC file extension
          // it appends a valid extension to the file inorder to export it.
-         if (Path.GetExtension(filePathName).IndexOf(Properties.Resources.IFC, StringComparison.CurrentCultureIgnoreCase) != -1)
+         if (Path.GetExtension(filePathName).IndexOf(Properties.Resources.IFC, StringComparison.OrdinalIgnoreCase) != -1)
          {
             fileDialog.FileName = Path.GetFileName(filePathName);
          }
@@ -743,7 +743,7 @@ namespace BIM.IFC.Export.UI
          // Display the FilePath and the FileName which the user chooses
          if (m_FileDialogResult.HasValue && m_FileDialogResult.Value)
          {
-            if (Path.GetExtension(FileName).IndexOf(Properties.Resources.IFC, StringComparison.CurrentCultureIgnoreCase) != -1)
+            if (Path.GetExtension(FileName).IndexOf(Properties.Resources.IFC, StringComparison.OrdinalIgnoreCase) != -1)
             {
                textBoxSetupFileName.Text = FilePath + "\\" + FileName;
             }
@@ -818,7 +818,7 @@ namespace BIM.IFC.Export.UI
          if (!String.IsNullOrWhiteSpace(textBoxSetupFileName.Text))
          {
             // Gets the file name without extension if the file extension is a valid IFC File format.
-            if (Path.GetExtension(textBoxSetupFileName.Text).IndexOf(Properties.Resources.IFC, StringComparison.CurrentCultureIgnoreCase) != -1)
+            if (Path.GetExtension(textBoxSetupFileName.Text).IndexOf(Properties.Resources.IFC, StringComparison.OrdinalIgnoreCase) != -1)
                FileName = multipleFiles ? Properties.Resources.MultipleFiles : Path.GetFileNameWithoutExtension(textBoxSetupFileName.Text);
             else
                FileName = multipleFiles ? Properties.Resources.MultipleFiles : Path.GetFileName(textBoxSetupFileName.Text);

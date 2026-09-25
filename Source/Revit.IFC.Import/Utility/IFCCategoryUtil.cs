@@ -893,7 +893,7 @@ namespace Revit.IFC.Import.Utility
                string[] nameAndPredefinedType = subCategoryName.Split('.');
                if (nameAndPredefinedType.Count() == 2)
                {
-                  nameAndPredefinedType[1] = nameAndPredefinedType[1].ToUpper();
+                  nameAndPredefinedType[1] = nameAndPredefinedType[1].ToUpperInvariant();
                   string altSubCategoryName = string.Join(".", nameAndPredefinedType);
 
                   Category subCategory = subcategories.get_Item(altSubCategoryName);

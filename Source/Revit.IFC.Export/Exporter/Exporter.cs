@@ -3417,15 +3417,15 @@ namespace Revit.IFC.Export.Exporter
             if (!string.IsNullOrEmpty(savedAddressItem.Purpose))
             {
                addressPurpose = IFCAddressType.UserDefined;     // set this as default value
-               if (string.Compare(savedAddressItem.Purpose, "OFFICE", true) == 0)
+               if (string.Equals(savedAddressItem.Purpose, "OFFICE", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.Office;
-               else if (string.Compare(savedAddressItem.Purpose, "SITE", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "SITE", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.Site;
-               else if (string.Compare(savedAddressItem.Purpose, "HOME", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "HOME", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.Home;
-               else if (string.Compare(savedAddressItem.Purpose, "DISTRIBUTIONPOINT", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "DISTRIBUTIONPOINT", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.DistributionPoint;
-               else if (string.Compare(savedAddressItem.Purpose, "USERDEFINED", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "USERDEFINED", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.UserDefined;
             }
 

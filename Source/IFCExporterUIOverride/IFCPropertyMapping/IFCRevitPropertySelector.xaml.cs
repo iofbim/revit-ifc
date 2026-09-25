@@ -424,7 +424,7 @@ namespace BIM.IFC.Export.UI
          string entityName = applicableEntityType.ToString();
          IfcSchemaEntityTree theTree = IfcSchemaEntityTree.GetEntityDictFor(ifcVersion, null);
          int typeLen = 4;
-         bool isType = entityName.EndsWith("Type", StringComparison.CurrentCultureIgnoreCase);
+         bool isType = entityName.EndsWith("Type", StringComparison.OrdinalIgnoreCase);
          if (!isType)
          {
             if (entityName.Equals("IfcDoorStyle", StringComparison.InvariantCultureIgnoreCase)

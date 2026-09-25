@@ -344,7 +344,7 @@ namespace Revit.IFC.Export.Utility
             CustomSubCategoryId customSubCategoryId =
                ExporterUtil.WallFunctionToCustomSubCategoryId((typeOrSymbol as WallType)?.Function);
             ExportIFCCategoryInfo info = ExporterCacheManager.CategoryMappingTemplate.GetMappingInfoById(document, categoryId, customSubCategoryId);
-            if (string.Compare(info?.IFCPredefinedType ?? string.Empty, "USERDEFINED", true) == 0)
+            if (string.Equals(info?.IFCPredefinedType ?? string.Empty, "USERDEFINED", StringComparison.OrdinalIgnoreCase))
             {
                overrideValue = info.IFCUserDefinedType;
             }

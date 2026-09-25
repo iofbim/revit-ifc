@@ -633,8 +633,8 @@ namespace BIM.IFC.Export.UI
             // Here, to make sure the exclusion/inclusion is consistent for IfcProduct and IfcTypeProduct, 
             // if the Type is checked/unchecked the associated Entity will be checked/unchecked too
             // and the other way round too: if the Entity is checked/unchecked the associated Type will be checked/unchecked
-            string clName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.CurrentCultureIgnoreCase) ? thisNode.Name.Substring(0, thisNode.Name.Length - 4) : thisNode.Name;
-            string tyName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.CurrentCultureIgnoreCase) ? thisNode.Name : thisNode.Name + "Type";
+            string clName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.OrdinalIgnoreCase) ? thisNode.Name.Substring(0, thisNode.Name.Length - 4) : thisNode.Name;
+            string tyName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.OrdinalIgnoreCase) ? thisNode.Name : thisNode.Name + "Type";
             if (thisNode.Name.Equals(clName))
             {
                TreeViewItem assocTypeItem;
@@ -678,8 +678,8 @@ namespace BIM.IFC.Export.UI
          // Here, to make sure the exclusion/inclusion is consistent for IfcProduct and IfcTypeProduct, 
          // if the Type is checked/unchecked the associated Entity will be checked/unchecked too
          // and the other way round too: if the Entity is checked/unchecked the associated Type will be checked/unchecked
-         string clName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.CurrentCultureIgnoreCase) ? thisNode.Name.Substring(0, thisNode.Name.Length - 4) : thisNode.Name;
-         string tyName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.CurrentCultureIgnoreCase) ? thisNode.Name : thisNode.Name + "Type";
+         string clName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.OrdinalIgnoreCase) ? thisNode.Name.Substring(0, thisNode.Name.Length - 4) : thisNode.Name;
+         string tyName = thisNode.Name.Substring(thisNode.Name.Length - 4, 4).Equals("Type", StringComparison.OrdinalIgnoreCase) ? thisNode.Name : thisNode.Name + "Type";
          if (thisNode.Name.Equals(clName))
          {
             TreeViewItem assocTypeItem;
