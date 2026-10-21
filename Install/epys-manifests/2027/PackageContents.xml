@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage SchemaVersion="1.0" AutodeskProduct="Revit" ProductType="Application" Name="IFC Exporter for Revit - E-PYS" AppVersion="27.3.12.3" Description="Replaces the built-in IFC export capabilities of Revit 2027, adding the E-PYS information requirements and Turkish locale fixes. " Author="I of BIM" Icon=".\Contents\Resources\IFCExporter.png" AppNameSpace="appstore.exchange.autodesk.com" OnlineDocumentation="https://iofbim.io" HelpFile=".\Contents\Resources\ADSKIFCExporterHelp.htm" ProductCode="{B3D7E41C-6A92-4E58-9C03-1F7A5D2E8B64}" UpgradeCode="{9C1F4A77-3E52-4C8B-9F41-6B0D5E2A7C13}" SupportedLocales="Enu">
+  <CompanyDetails Name="I of BIM" Phone=" " Url="https://iofbim.io" Email="admin@iofbim.io" />
+  <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2027" SeriesMax="R2027" />
+  <Components Description="2027">
+    <RuntimeRequirements OS="Win64" Platform="Revit" SeriesMin="R2027" SeriesMax="R2027" />
+    <ComponentEntry AppName="IFC For Revit 2027 - E-PYS" Version="27.3.12.3" ModuleName="./Contents/2027/Revit.IFC.addin" AppDescription="IFC For Revit 2027 - E-PYS" />
+  </Components>
+</ApplicationPackage>

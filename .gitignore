@@ -195,3 +195,10 @@ FakesAssemblies/
 *.ide-wal
 .vs/
 *.sig
+
+# E-PYS multi-version packaging: build outputs, not sources.
+# Install/epys-manifests/ IS tracked -- those are hand-maintained per-version
+# PackageContents.xml / Revit.IFC.addin files that the MSI packages.
+/Install/epys-stage/
+/Install/Releasex64/
+/Install/build-*.log
