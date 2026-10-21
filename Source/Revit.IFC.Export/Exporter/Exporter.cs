@@ -3332,6 +3332,10 @@ namespace Revit.IFC.Export.Exporter
          string projectDescription = null;
          string projectPhase = null;
 
+         // Declared out here because the Name/Description override has to be re-applied
+         // after CreateProject, below, not just computed before it.
+         EPYSActorInfo epysProjectInfoForOverride = null;
+
          if (!ExporterCacheManager.ExportOptionsCache.ExportGeometryOnly)
          {
             COBieProjectInfo cobieProjInfo = ExporterCacheManager.ExportOptionsCache.COBieProjectInfo;
@@ -3354,9 +3358,9 @@ namespace Revit.IFC.Export.Exporter
                   if (ParameterUtil.GetStringValueFromElement(projectInfo, "IfcProject.Phase", out projectPhase) == null)
                      ParameterUtil.GetStringValueFromElement(projectInfo, "Project Phase", out projectPhase);
 
-               // E-PYS supplies the IfcProject values that the Revit Project Information
-               // leaves blank. Anything authored in Revit always wins, so that the model
-               // and the exported file cannot disagree.
+               // The E-PYS tab is the authoritative source for the IfcProject values: what
+               // the user enters there is what gets exported, and the Revit Project
+               // Information only supplies what the tab leaves blank.
                EPYSActorInfo epysProjectInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
                if (epysProjectInfo != null)
                {
@@ -3364,6 +3368,7 @@ namespace Revit.IFC.Export.Exporter
                   projectLongName = EPYSActorInfo.ResolveProjectValue(projectLongName, epysProjectInfo.ProjectLongName);
                   projectDescription = EPYSActorInfo.ResolveProjectValue(projectDescription, epysProjectInfo.ProjectDescription);
                   projectPhase = EPYSActorInfo.ResolveProjectValue(projectPhase, epysProjectInfo.ProjectPhase);
+                  epysProjectInfoForOverride = epysProjectInfo;
                }
             }
          }
@@ -3372,6 +3377,34 @@ namespace Revit.IFC.Export.Exporter
          IFCAnyHandle projectHandle = IFCInstanceExporter.CreateProject(exporterIFC, projectInfo, projectGUID, ownerHistory,
             projectName, projectDescription, projectLongName, projectPhase, repContexts, null);
          ExporterCacheManager.ProjectHandle = projectHandle;
+
+         // CreateProject sets LongName and Phase from the values passed in, but routes Name
+         // and Description through SetRoot, which re-reads them from the ProjectInfo element
+         // via NamingUtil.GetNameOverride / GetDescriptionOverride. Those consult the
+         // Attribute Mapping cache and the Revit parameters, so they discard the E-PYS
+         // values: Name came back as the Revit project Number, and Description was dropped
+         // entirely (GetDescriptionOverride is called with a null original value). Setting
+         // the two attributes again here is the only point after that override, so this is
+         // what actually makes the E-PYS tab authoritative for Name and Description, as it
+         // already is for LongName and Phase.
+         if (epysProjectInfoForOverride != null && !IFCAnyHandleUtil.IsNullOrHasNoValue(projectHandle))
+         {
+            try
+            {
+               if (!string.IsNullOrWhiteSpace(epysProjectInfoForOverride.ProjectName))
+                  IFCAnyHandleUtil.SetAttribute(projectHandle, "Name", projectName);
+               if (!string.IsNullOrWhiteSpace(epysProjectInfoForOverride.ProjectDescription))
+                  IFCAnyHandleUtil.SetAttribute(projectHandle, "Description", projectDescription);
+            }
+            catch (Exception ex)
+            {
+               // Supplementary, like every other E-PYS path: keep whatever CreateProject
+               // wrote rather than taking the export down, and say why in the journal.
+               doc?.Application?.WriteJournalComment(
+                  "IFC E-PYS: failed to apply the E-PYS IfcProject Name/Description: "
+                  + ex.ToString(), true);
+            }
+         }
 
          if (projectInfo != null)
          {
