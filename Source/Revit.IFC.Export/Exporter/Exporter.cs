@@ -2667,6 +2667,20 @@ namespace Revit.IFC.Export.Exporter
                string projectName = ifcFileDocumentInfo?.ProjectName ?? string.Empty;
                string projectStatus = ifcFileDocumentInfo?.ProjectStatus ?? string.Empty;
 
+               // UpdateProject overwrites IfcProject.Name, .LongName and .Phase from the
+               // Revit document information, and it runs here at file-write time, long
+               // after CreateProject. That silently undid the E-PYS values: Name came out
+               // as the Revit project Number, LongName and Phase as the Revit values,
+               // while Description survived only because UpdateProject does not touch it.
+               // Where the E-PYS tab supplies a value it is authoritative, so keep it.
+               EPYSActorInfo epysActorInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
+               if (epysActorInfo != null)
+               {
+                  projectNumber = EPYSActorInfo.ResolveProjectValue(projectNumber, epysActorInfo.ProjectName);
+                  projectName = EPYSActorInfo.ResolveProjectValue(projectName, epysActorInfo.ProjectLongName);
+                  projectStatus = EPYSActorInfo.ResolveProjectValue(projectStatus, epysActorInfo.ProjectPhase);
+               }
+
                IFCAnyHandle project = ExporterCacheManager.ProjectHandle;
                if (!IFCAnyHandleUtil.IsNullOrHasNoValue(project))
                   IFCAnyHandleUtil.UpdateProject(project, projectNumber, projectName, projectStatus);
