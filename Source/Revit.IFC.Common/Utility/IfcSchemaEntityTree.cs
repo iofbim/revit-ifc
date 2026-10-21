@@ -262,7 +262,7 @@ namespace Revit.IFC.Common.Utility
       /// <returns>the tree, or null if the schema file is not found</returns>
       static public IfcSchemaEntityTree GetEntityDictFor(string schemaFile, string schemaLoc = null)
       {
-         schemaFile = schemaFile.ToUpper();
+         schemaFile = schemaFile.ToUpperInvariant();
          if (IFCSchemaDict.ContainsKey(schemaFile))
             return IFCSchemaDict[schemaFile];
 
@@ -328,7 +328,7 @@ namespace Revit.IFC.Common.Utility
 
          foreach (FileInfo fileInfo in dirInfo.GetFiles("*.xsd"))
          {
-            string schemaId = Path.GetFileNameWithoutExtension(fileInfo.Name).ToUpper();
+            string schemaId = Path.GetFileNameWithoutExtension(fileInfo.Name).ToUpperInvariant();
             if (!schemaProcessed.Contains(fileInfo.Name) && !IFCSchemaDict.ContainsKey(schemaId))
             {
                IfcSchemaEntityTree entityTree = new IfcSchemaEntityTree();
@@ -410,22 +410,22 @@ namespace Revit.IFC.Common.Utility
       public static string GetTypeNameFromInstanceName(string instanceName, bool exportAsOlderThanIFC4)
       {
          // Deal with exceptions.
-         if (string.Compare(instanceName, "IfcProduct", true) == 0)
+         if (string.Equals(instanceName, "IfcProduct", StringComparison.OrdinalIgnoreCase))
             return "IfcTypeProduct";
-         else if (string.Compare(instanceName, "IfcObject", true) == 0)
+         else if (string.Equals(instanceName, "IfcObject", StringComparison.OrdinalIgnoreCase))
             return "IfcTypeObject";
          // IFCDoorType and IFCWindowType are available since IFC4.
-         else if (string.Compare(instanceName, "IfcWindow", true) == 0 && exportAsOlderThanIFC4)
+         else if (string.Equals(instanceName, "IfcWindow", StringComparison.OrdinalIgnoreCase) && exportAsOlderThanIFC4)
             return "IfcWindowStyle";
-         else if (string.Compare(instanceName, "IFCDoor", true) == 0 && exportAsOlderThanIFC4)
+         else if (string.Equals(instanceName, "IFCDoor", StringComparison.OrdinalIgnoreCase) && exportAsOlderThanIFC4)
             return "IFCDoorStyle";
          // IfcReinforcingBarType, IfcReinforcingMeshType, IfcTendonAnchorType, and IfcTendonType
          // are type entities introduced only in IFC 4. For older schemas, we use the basic type entity instead.
          else if (exportAsOlderThanIFC4 &&
-            ((string.Compare(instanceName, "IfcReinforcingBar", true) == 0) ||
-            (string.Compare(instanceName, "IfcReinforcingMesh", true) == 0) ||
-            (string.Compare(instanceName, "IfcTendonAnchor", true) == 0) ||
-            (string.Compare(instanceName, "IfcTendon", true) == 0)))
+            ((string.Equals(instanceName, "IfcReinforcingBar", StringComparison.OrdinalIgnoreCase)) ||
+            (string.Equals(instanceName, "IfcReinforcingMesh", StringComparison.OrdinalIgnoreCase)) ||
+            (string.Equals(instanceName, "IfcTendonAnchor", StringComparison.OrdinalIgnoreCase)) ||
+            (string.Equals(instanceName, "IfcTendon", StringComparison.OrdinalIgnoreCase))))
             return "IfcReinforcingElementType";
 
          return instanceName + "Type";
@@ -456,7 +456,7 @@ namespace Revit.IFC.Common.Utility
          bool schemaOlderThanIFC4 = context.Equals(Ifc2x3Schema, StringComparison.InvariantCultureIgnoreCase) 
             || context.Equals(Ifc2x2Schema, StringComparison.InvariantCultureIgnoreCase);
 
-         string theTypeName = typeName.EndsWith("Type", StringComparison.CurrentCultureIgnoreCase) ? 
+         string theTypeName = typeName.EndsWith("Type", StringComparison.OrdinalIgnoreCase) ? 
             typeName : GetTypeNameFromInstanceName(typeName, schemaOlderThanIFC4); 
          
          IfcSchemaEntityNode entNode = ifcEntitySchemaTree.Find(theTypeName);

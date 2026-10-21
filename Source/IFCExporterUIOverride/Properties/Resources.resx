@@ -1343,4 +1343,136 @@
   <data name="ThermalMaterialParams" xml:space="preserve">
     <value>Thermal</value>
   </data>
+  <data name="EPYSTabName" xml:space="preserve">
+    <value>E-PYS</value>
+  </data>
+  <data name="EPYSUseActorInfo" xml:space="preserve">
+    <value>Apply E-PYS actor information on export</value>
+  </data>
+  <data name="EPYSValidateOnExport" xml:space="preserve">
+    <value>Block the export when E-PYS requirements are not met</value>
+  </data>
+  <data name="EPYSPersonGroup" xml:space="preserve">
+    <value>IfcPerson</value>
+  </data>
+  <data name="EPYSOrganizationGroup" xml:space="preserve">
+    <value>IfcOrganization</value>
+  </data>
+  <data name="EPYSPersonIdentification" xml:space="preserve">
+    <value>Identification (chamber reg. no)</value>
+  </data>
+  <data name="EPYSPersonFamilyName" xml:space="preserve">
+    <value>Family name</value>
+  </data>
+  <data name="EPYSPersonGivenName" xml:space="preserve">
+    <value>Given name</value>
+  </data>
+  <data name="EPYSPersonRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="EPYSPersonUserDefinedRole" xml:space="preserve">
+    <value>User defined role</value>
+  </data>
+  <data name="EPYSPersonRoleDescription" xml:space="preserve">
+    <value>Role description</value>
+  </data>
+  <data name="EPYSOrganizationIdentification" xml:space="preserve">
+    <value>Identification</value>
+  </data>
+  <data name="EPYSOrganizationName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="EPYSOrganizationDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="EPYSOrganizationRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="EPYSOrganizationUserDefinedRole" xml:space="preserve">
+    <value>User defined role</value>
+  </data>
+  <data name="EPYSOrganizationRoleDescription" xml:space="preserve">
+    <value>Role description</value>
+  </data>
+  <data name="EPYSAddressGroup" xml:space="preserve">
+    <value>Addresses</value>
+  </data>
+  <data name="EPYSStreetAddress" xml:space="preserve">
+    <value>Street address</value>
+  </data>
+  <data name="EPYSCity" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="EPYSRegion" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="EPYSPostalCode" xml:space="preserve">
+    <value>Postal code</value>
+  </data>
+  <data name="EPYSCountry" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="EPYSTelephone" xml:space="preserve">
+    <value>Telephone</value>
+  </data>
+  <data name="EPYSElectronicMail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="EPYSRequiredFieldMarker" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="EPYSRequiredFieldNote" xml:space="preserve">
+    <value>Fields marked * are required by E-PYS.</value>
+  </data>
+  <data name="EPYSValidationTitle" xml:space="preserve">
+    <value>E-PYS requirements not met</value>
+  </data>
+  <data name="EPYSValidationMessage" xml:space="preserve">
+    <value>The following information required by E-PYS is missing or invalid:</value>
+  </data>
+  <data name="EPYSValidationContinue" xml:space="preserve">
+    <value>Do you want to continue the export anyway?</value>
+  </data>
+  <data name="EPYSInvalidEmail" xml:space="preserve">
+    <value>The e-mail address is not valid.</value>
+  </data>
+  <data name="EPYSInvalidTelephone" xml:space="preserve">
+    <value>The telephone number is not valid.</value>
+  </data>
+  <data name="EPYSProjectGroup" xml:space="preserve">
+    <value>IfcProject</value>
+  </data>
+  <data name="EPYSProjectName" xml:space="preserve">
+    <value>Name (project code)</value>
+  </data>
+  <data name="EPYSProjectLongName" xml:space="preserve">
+    <value>Long name</value>
+  </data>
+  <data name="EPYSProjectDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="EPYSProjectType" xml:space="preserve">
+    <value>Project type (Pset_ProjectCommon)</value>
+  </data>
+  <data name="EPYSProjectPhase" xml:space="preserve">
+    <value>Phase</value>
+  </data>
+  <data name="EPYSProjectNote" xml:space="preserve">
+    <value>Values entered here are exported. Fields filled from the Revit Project Information are shown greyed out and are used only where this tab is left blank.</value>
+  </data>
+  <data name="EPYSApplyToApplicationDeveloper" xml:space="preserve">
+    <value>Also apply to the application developer organization (Autodesk)</value>
+  </data>
+  <data name="EPYSSupportText" xml:space="preserve">
+    <value>E-PYS requirements by</value>
+  </data>
+  <data name="EPYSSupportLink" xml:space="preserve">
+    <value>I of BIM</value>
+  </data>
+  <data name="EPYSSupportUrl" xml:space="preserve">
+    <value>https://iofbim.io</value>
+  </data>
+  <data name="EPYSSupportMail" xml:space="preserve">
+    <value>admin@iofbim.io</value>
+  </data>
 </root>

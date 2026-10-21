@@ -237,7 +237,7 @@ namespace Revit.IFC.Export.Utility
          IFCVersion ifcVersion = ExporterCacheManager.ExportOptionsCache.FileVersion;
          IfcSchemaEntityTree theTree = IfcSchemaEntityTree.GetEntityDictFor(ifcVersion);
          int typeLen = 4;
-         bool isType = entityTypeName.EndsWith("Type", StringComparison.CurrentCultureIgnoreCase);
+         bool isType = entityTypeName.EndsWith("Type", StringComparison.OrdinalIgnoreCase);
          if (!isType)
          {
             if (entityTypeName.Equals("IfcDoorStyle", StringComparison.InvariantCultureIgnoreCase)

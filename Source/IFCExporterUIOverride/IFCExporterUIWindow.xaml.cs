@@ -80,6 +80,62 @@ namespace BIM.IFC.Export.UI
          ResetToOriginalConfigSettings(currentConfigName);
 
          InitParameterMappingUI();
+
+         InitEPYSActorInfoUI();
+      }
+
+      TabItem epysActorInfoItem;
+
+      /// <summary>
+      /// Adds the E-PYS (EK-7) actor information tab.
+      /// </summary>
+      /// <remarks>
+      /// Unlike the COBie tabs, which are added and removed as the IFC version changes,
+      /// this tab is present for every export setup: the E-PYS requirements apply
+      /// regardless of the selected IFC version or MVD. Whether the information is
+      /// actually written to the file is controlled by the check box on the tab itself.
+      /// </remarks>
+      private void InitEPYSActorInfoUI()
+      {
+         // GetSelectedConfiguration falls back to the in-session configuration, so this is
+         // safe even when the window was opened without a valid most recently used name.
+         IFCExportConfiguration configuration = GetSelectedConfiguration();
+         if (configuration == null)
+            return;
+
+         epysActorInfoItem = new TabItem();
+         epysActorInfoItem.Header = Properties.Resources.EPYSTabName;
+         epysActorInfoItem.Content = new EPYSActorInfoTab(configuration.EPYSActorInfo);
+         epysActorInfoItem.Unloaded += EPYSActorInfoUnloaded;
+         epysActorInfoItem.LostFocus += EPYSActorInfoLostFocus;
+         tabControl.Items.Add(epysActorInfoItem);
+      }
+
+      /// <summary>
+      /// Writes the E-PYS actor information in the tab back into a configuration.
+      /// </summary>
+      private void SaveEPYSActorInfo(IFCExportConfiguration configuration)
+      {
+         if (configuration == null || epysActorInfoItem == null)
+            return;
+
+         if (epysActorInfoItem.Content is EPYSActorInfoTab epysTab)
+            configuration.EPYSActorInfo = epysTab.ActorInfoStr;
+      }
+
+      void EPYSActorInfoUnloaded(object sender, RoutedEventArgs e)
+      {
+         if (sender is TabItem tabItem && tabItem.Content is EPYSActorInfoTab epysTab)
+         {
+            IFCExportConfiguration configuration = GetSelectedConfiguration();
+            if (configuration != null)
+               configuration.EPYSActorInfo = epysTab.ActorInfoStr;
+         }
+      }
+
+      void EPYSActorInfoLostFocus(object sender, RoutedEventArgs e)
+      {
+         SaveEPYSActorInfo(GetSelectedConfiguration());
       }
 
       /// <summary>
@@ -732,6 +788,7 @@ namespace BIM.IFC.Export.UI
          {
             configuration.ExportUserDefinedPsetsFileName = userDefinedPropertySetFileName.Text;
             configuration.ExportUserDefinedParameterMappingFileName = userDefinedParameterMappingTable.Text;
+            SaveEPYSActorInfo(configuration);
             if (CRSOverride)
             {
                configuration.GeoRefEPSGCode = TextBox_EPSG.Text;
@@ -1034,6 +1091,9 @@ namespace BIM.IFC.Export.UI
                   if (projectInfoItem != null && tabControl.Items.Contains(projectInfoItem))
                      prevConfig.COBieProjectInfo = (projectInfoItem.Content as COBieProjectInfoTab).ProjectInfoStr;
                }
+
+               // The E-PYS tab is shown for every IFC version, so its data is always kept.
+               SaveEPYSActorInfo(prevConfig);
             }
          }
 
@@ -1046,6 +1106,31 @@ namespace BIM.IFC.Export.UI
             UpdateActiveConfigurationOptions(configuration);
             UpdateConfigurationControls(configuration.IsBuiltIn, configuration.IsInSession);
             SetupGeoReferenceInfo(configuration);
+            ReloadEPYSActorInfo(configuration);
+         }
+      }
+
+      /// <summary>
+      /// Shows the E-PYS actor information of a configuration in the tab, after the
+      /// selected configuration has changed.
+      /// </summary>
+      private void ReloadEPYSActorInfo(IFCExportConfiguration configuration)
+      {
+         if (configuration == null || epysActorInfoItem == null)
+            return;
+
+         // The handlers would write the outgoing tab's values into the incoming
+         // configuration, so detach them while the content is replaced.
+         epysActorInfoItem.Unloaded -= EPYSActorInfoUnloaded;
+         epysActorInfoItem.LostFocus -= EPYSActorInfoLostFocus;
+         try
+         {
+            epysActorInfoItem.Content = new EPYSActorInfoTab(configuration.EPYSActorInfo);
+         }
+         finally
+         {
+            epysActorInfoItem.Unloaded += EPYSActorInfoUnloaded;
+            epysActorInfoItem.LostFocus += EPYSActorInfoLostFocus;
          }
       }
 

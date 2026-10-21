@@ -5044,7 +5044,7 @@ namespace Revit.IFC.Export.Toolkit
 
          if (!ExporterCacheManager.ExportOptionsCache.ExportAs4ReferenceView)
             IFCAnyHandleUtil.SetAttribute(doorType, "ParameterTakesPrecedence", parameterTakesPrecedence);
-         if (string.Compare(validatedOperationType, "USERDEFINED", true) == 0 && !string.IsNullOrEmpty(userDefinedOperationType))
+         if (string.Equals(validatedOperationType, "USERDEFINED", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(userDefinedOperationType))
             IFCAnyHandleUtil.SetAttribute(doorType, "UserDefinedOperationType", userDefinedOperationType);
 
          SetElementType(doorType, revitType, ref validatedPreDefinedType, guid, propertySets, representationMaps);
@@ -5118,7 +5118,7 @@ namespace Revit.IFC.Export.Toolkit
 
          if (!ExporterCacheManager.ExportOptionsCache.ExportAs4ReferenceView)
             IFCAnyHandleUtil.SetAttribute(windowType, "ParameterTakesPrecedence", paramTakesPrecedence);
-         if (string.Compare(validatedPartitioningType, "USERDEFINED", true) == 0 && !string.IsNullOrEmpty(userDefinedPartitioningType))
+         if (string.Equals(validatedPartitioningType, "USERDEFINED", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(userDefinedPartitioningType))
             IFCAnyHandleUtil.SetAttribute(windowType, "UserDefinedPartitioningType", userDefinedPartitioningType);
          
          SetElementType(windowType, revitType, ref validatedPreDefinedType, guid, propertySets, representationMaps);
@@ -7062,11 +7062,11 @@ namespace Revit.IFC.Export.Toolkit
          if (ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4)
             return false;
 
-         if (string.Compare(theEnumType, "IfcWallType", true) == 0)
+         if (string.Equals(theEnumType, "IfcWallType", StringComparison.OrdinalIgnoreCase))
          {
-            if ((string.Compare(validatedString, "STANDARD", true) == 0) ||
-               (string.Compare(validatedString, "POLYGONAL", true) == 0) ||
-               (string.Compare(validatedString, "ELEMENTEDWALL", true) == 0))
+            if ((string.Equals(validatedString, "STANDARD", StringComparison.OrdinalIgnoreCase)) ||
+               (string.Equals(validatedString, "POLYGONAL", StringComparison.OrdinalIgnoreCase)) ||
+               (string.Equals(validatedString, "ELEMENTEDWALL", StringComparison.OrdinalIgnoreCase)))
                return true;
          }
 

@@ -93,7 +93,7 @@ namespace Revit.IFC.Export.Toolkit
          }
 
          if (!string.IsNullOrEmpty(typeName) && 
-            (string.Compare(typeName, "NotDefined", true) != 0 || string.IsNullOrEmpty(defaultValue)))
+            (!string.Equals(typeName, "NotDefined", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(defaultValue)))
          {
             if (ValidateStrEnum<TEnum>(typeName) != null)
                return typeName;

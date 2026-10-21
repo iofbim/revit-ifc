@@ -427,6 +427,17 @@ namespace BIM.IFC.Export.UI
 
       #endregion     // COBieTab
 
+      // Items under the E-PYS Tab
+      #region EPYSTab
+
+      /// <summary>
+      /// E-PYS (EK-7) actor information for IfcPerson, IfcOrganization,
+      /// IfcPersonAndOrganization and IfcActorRole, as JSON (from a dedicated tab).
+      /// </summary>
+      public string EPYSActorInfo { get; set; } = "";
+
+      #endregion     // EPYSTab
+
       /// <summary>
       /// The name of the configuration.
       /// </summary>

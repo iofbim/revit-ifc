@@ -102,11 +102,11 @@ namespace Revit.IFC.Common.Utility
                      {
                         if (theTree.PredefinedTypeEnumDict.ContainsKey(enumName))
                         {
-                           theTree.PredefinedTypeEnumDict[enumName].Add(enumFacet.Value.ToUpper());
+                           theTree.PredefinedTypeEnumDict[enumName].Add(enumFacet.Value.ToUpperInvariant());
                         }
                         else
                         {
-                           enumValueList.Add(enumFacet.Value.ToUpper());
+                           enumValueList.Add(enumFacet.Value.ToUpperInvariant());
                         }
                      }
                      if (enumValueList.Count > 0)

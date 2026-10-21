@@ -941,9 +941,9 @@ namespace Revit.IFC.Export.Utility
          if ((overrideCategory?.Id.Value ?? -1) == (int) BuiltInCategory.OST_MassFloor)
          {
             string className = GetIFCEntityNameFromExportTable(overrideCategory);
-            if (string.Compare(className, "IfcSlab", true) == 0)
+            if (string.Equals(className, "IfcSlab", StringComparison.OrdinalIgnoreCase))
                return "FLOOR";
-            if (string.Compare(className, "IfcCovering", true) == 0)
+            if (string.Equals(className, "IfcCovering", StringComparison.OrdinalIgnoreCase))
                return "FLOORING";
          }
 
@@ -2016,7 +2016,7 @@ namespace Revit.IFC.Export.Utility
       /// <returns>True if the enumTypeValue is null, empty, or set to "NOTDEFINED".</returns>
       public static bool IsNotDefined(string enumTypeValue)
       {
-         return (string.IsNullOrWhiteSpace(enumTypeValue) || (string.Compare(enumTypeValue, "NOTDEFINED", true) == 0));
+         return (string.IsNullOrWhiteSpace(enumTypeValue) || (string.Equals(enumTypeValue, "NOTDEFINED", StringComparison.OrdinalIgnoreCase)));
       }
 
       /// <summary>

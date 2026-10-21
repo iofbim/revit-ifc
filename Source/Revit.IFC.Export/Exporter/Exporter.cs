@@ -2830,7 +2830,26 @@ namespace Revit.IFC.Export.Exporter
          string productVersion = app.VersionNumber;
          string productIdentifier = "Revit";
 
-         IFCAnyHandle developer = IFCInstanceExporter.CreateOrganization(file, null, productFullName, null, null, null);
+         // By default the application developer organization identifies the software vendor
+         // and carries no E-PYS attributes. Some checkers require every IfcOrganization in
+         // the file to satisfy the E-PYS requirements, so this can be opted into.
+         EPYSActorInfo epysActorInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
+         IFCAnyHandle developer;
+         if (epysActorInfo != null && epysActorInfo.ApplyToApplicationDeveloper)
+         {
+            IFCAnyHandle developerRole = CreateEPYSActorRole(file, epysActorInfo.OrganizationRole,
+               epysActorInfo.OrganizationUserDefinedRole, epysActorInfo.OrganizationRoleDescription);
+
+            developer = IFCInstanceExporter.CreateOrganization(file,
+               epysActorInfo.OrganizationIdentification, productFullName, null,
+               developerRole != null ? [ developerRole ] : null,
+               CreateEPYSOrganizationAddresses(file, epysActorInfo));
+         }
+         else
+         {
+            developer = IFCInstanceExporter.CreateOrganization(file, null, productFullName, null, null, null);
+         }
+
          IFCAnyHandle application = IFCInstanceExporter.CreateApplication(file, developer, productVersion, productFullName, productIdentifier);
          return application;
       }
@@ -3160,9 +3179,6 @@ namespace Revit.IFC.Export.Exporter
                telecomAddresses = [ telecomAddress ];
             }
 
-            person = IFCInstanceExporter.CreatePerson(file, null, familyName, givenName, middleNames,
-                prefixTitles, suffixTitles, null, telecomAddresses);
-
             string organizationName = null;
             string organizationDescription = null;
             if (projectInfo != null)
@@ -3177,7 +3193,91 @@ namespace Revit.IFC.Export.Exporter
                }
             }
 
-            organization = IFCInstanceExporter.CreateOrganization(file, null, organizationName, organizationDescription, null, null);
+            // E-PYS (EK-7) requires IfcPerson.Identification/Roles and
+            // IfcOrganization.Identification/Addresses/Roles, none of which can be authored in
+            // Revit. When E-PYS actor information has been supplied in the export setup, it
+            // takes precedence over the values derived from the Revit project information.
+            string personIdentification = null;
+            IList<IFCAnyHandle> personRoles = null;
+            string organizationIdentification = null;
+            IList<IFCAnyHandle> organizationRoles = null;
+            IList<IFCAnyHandle> organizationAddresses = null;
+
+            EPYSActorInfo epysActorInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
+            if (epysActorInfo != null)
+            {
+               try
+               {
+                  personIdentification = epysActorInfo.PersonIdentification;
+                  if (!string.IsNullOrWhiteSpace(epysActorInfo.PersonFamilyName))
+                  {
+                     familyName = epysActorInfo.PersonFamilyName;
+                     // The E-PYS name is authored as discrete attributes, so discard the parts
+                     // parsed out of the free form Revit author string.
+                     middleNames = null;
+                     prefixTitles = null;
+                     suffixTitles = null;
+                  }
+                  if (!string.IsNullOrWhiteSpace(epysActorInfo.PersonGivenName))
+                     givenName = epysActorInfo.PersonGivenName;
+
+                  IFCAnyHandle personRole = CreateEPYSActorRole(file, epysActorInfo.PersonRole,
+                     epysActorInfo.PersonUserDefinedRole, epysActorInfo.PersonRoleDescription);
+                  if (personRole != null)
+                     personRoles = [ personRole ];
+
+                  organizationIdentification = epysActorInfo.OrganizationIdentification;
+                  if (!string.IsNullOrWhiteSpace(epysActorInfo.OrganizationName))
+                     organizationName = epysActorInfo.OrganizationName;
+                  if (!string.IsNullOrWhiteSpace(epysActorInfo.OrganizationDescription))
+                     organizationDescription = epysActorInfo.OrganizationDescription;
+
+                  IFCAnyHandle organizationRole = CreateEPYSActorRole(file, epysActorInfo.OrganizationRole,
+                     epysActorInfo.OrganizationUserDefinedRole, epysActorInfo.OrganizationRoleDescription);
+                  if (organizationRole != null)
+                     organizationRoles = [ organizationRole ];
+
+                  List<IFCAnyHandle> epysOrganizationAddresses = CreateEPYSOrganizationAddresses(file, epysActorInfo);
+                  if (epysOrganizationAddresses.Count > 0)
+                     organizationAddresses = epysOrganizationAddresses;
+               }
+               catch (Exception ex)
+               {
+                  // The E-PYS information is supplementary: a problem building these handles
+                  // must not abort the whole export. Fall back to the values derived from the
+                  // Revit project information and report what went wrong.
+                  personIdentification = null;
+                  personRoles = null;
+                  organizationIdentification = null;
+                  organizationRoles = null;
+                  organizationAddresses = null;
+
+                  doc?.Application?.WriteJournalComment(
+                     "IFC E-PYS: failed to apply the E-PYS actor information: " + ex.ToString(), true);
+               }
+            }
+
+            try
+            {
+               person = IFCInstanceExporter.CreatePerson(file, personIdentification, familyName, givenName, middleNames,
+                   prefixTitles, suffixTitles, personRoles, telecomAddresses);
+               organization = IFCInstanceExporter.CreateOrganization(file, organizationIdentification, organizationName,
+                   organizationDescription, organizationRoles, organizationAddresses);
+            }
+            catch (Exception ex)
+            {
+               // The E-PYS attributes are supplementary. If writing them fails, fall back to the
+               // plain IfcPerson/IfcOrganization rather than aborting the whole export, and
+               // record why in the journal.
+               doc?.Application?.WriteJournalComment(
+                  "IFC E-PYS: failed to create IfcPerson/IfcOrganization with the E-PYS attributes, "
+                  + "falling back to the default values: " + ex.ToString(), true);
+
+               person = IFCInstanceExporter.CreatePerson(file, null, familyName, givenName, middleNames,
+                   prefixTitles, suffixTitles, null, telecomAddresses);
+               organization = IFCInstanceExporter.CreateOrganization(file, null, organizationName,
+                   organizationDescription, null, organizationAddresses);
+            }
          }
 
          if (person != null || organization != null)
@@ -3237,6 +3337,18 @@ namespace Revit.IFC.Export.Exporter
                if (projectInfo != null)
                   if (ParameterUtil.GetStringValueFromElement(projectInfo, "IfcProject.Phase", out projectPhase) == null)
                      ParameterUtil.GetStringValueFromElement(projectInfo, "Project Phase", out projectPhase);
+
+               // E-PYS supplies the IfcProject values that the Revit Project Information
+               // leaves blank. Anything authored in Revit always wins, so that the model
+               // and the exported file cannot disagree.
+               EPYSActorInfo epysProjectInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
+               if (epysProjectInfo != null)
+               {
+                  projectName = EPYSActorInfo.ResolveProjectValue(projectName, epysProjectInfo.ProjectName);
+                  projectLongName = EPYSActorInfo.ResolveProjectValue(projectLongName, epysProjectInfo.ProjectLongName);
+                  projectDescription = EPYSActorInfo.ResolveProjectValue(projectDescription, epysProjectInfo.ProjectDescription);
+                  projectPhase = EPYSActorInfo.ResolveProjectValue(projectPhase, epysProjectInfo.ProjectPhase);
+               }
             }
          }
 
@@ -3266,6 +3378,70 @@ namespace Revit.IFC.Export.Exporter
             CreateActor("Project Architect", clientOrg, projectHandle, projectHandles, ownerHistory,
                file);
          }
+      }
+
+      /// <summary>
+      /// Creates the IfcActorRole for an E-PYS (EK-7) actor.
+      /// </summary>
+      /// <param name="file">The IFC file.</param>
+      /// <param name="role">The IfcActorRole.Role value, or USERDEFINED.</param>
+      /// <param name="userDefinedRole">The IfcActorRole.UserDefinedRole value.</param>
+      /// <param name="description">The IfcActorRole.Description value.</param>
+      /// <returns>The IfcActorRole handle, or null if no role was supplied.</returns>
+      private static IFCAnyHandle CreateEPYSActorRole(IFCFile file, string role, string userDefinedRole,
+         string description)
+      {
+         if (string.IsNullOrWhiteSpace(role))
+            return null;
+
+         // The IfcActorRole enumeration values are ASCII. Upper case them with the invariant
+         // culture so that a Turkish system does not turn "i" into the dotted capital "I",
+         // which would not parse and would silently fall back to USERDEFINED.
+         string roleValue = role.Trim().ToUpperInvariant();
+
+         // UserDefinedRole is only meaningful for the USERDEFINED role.
+         string userDefinedRoleValue = EPYSActorInfo.IsUserDefinedRole(roleValue)
+            ? userDefinedRole : null;
+
+         return IFCInstanceExporter.CreateActorRole(file, roleValue, userDefinedRoleValue, description);
+      }
+
+      /// <summary>
+      /// Creates the IfcPostalAddress and IfcTelecomAddress required by E-PYS (EK-7) for
+      /// IfcOrganization.Addresses.
+      /// </summary>
+      /// <param name="file">The IFC file.</param>
+      /// <param name="epysActorInfo">The E-PYS actor information.</param>
+      /// <returns>The list of address handles; empty if no address information was supplied.</returns>
+      private static List<IFCAnyHandle> CreateEPYSOrganizationAddresses(IFCFile file,
+         EPYSActorInfo epysActorInfo)
+      {
+         List<IFCAnyHandle> addresses = new List<IFCAnyHandle>();
+         if (epysActorInfo == null)
+            return addresses;
+
+         if (epysActorInfo.HasPostalAddressInfo())
+         {
+            IList<string> addressLines = !string.IsNullOrWhiteSpace(epysActorInfo.StreetAddress)
+               ? [ epysActorInfo.StreetAddress ] : null;
+
+            addresses.Add(IFCInstanceExporter.CreatePostalAddress(file, null, null, null, null,
+               addressLines, null, epysActorInfo.City, epysActorInfo.Region,
+               epysActorInfo.PostalCode, epysActorInfo.Country));
+         }
+
+         if (epysActorInfo.HasTelecomAddressInfo())
+         {
+            IList<string> telephoneNumbers = !string.IsNullOrWhiteSpace(epysActorInfo.Telephone)
+               ? [ epysActorInfo.Telephone ] : null;
+            IList<string> electronicMailAddresses = !string.IsNullOrWhiteSpace(epysActorInfo.ElectronicMail)
+               ? [ epysActorInfo.ElectronicMail ] : null;
+
+            addresses.Add(IFCInstanceExporter.CreateTelecomAddress(file, null, null, null,
+               telephoneNumbers, null, null, electronicMailAddresses, null));
+         }
+
+         return addresses;
       }
 
       private void CreateContact(IFCFile file, string category, string company, string department, string organizationCode, string contactFirstName,
@@ -3330,15 +3506,15 @@ namespace Revit.IFC.Export.Exporter
             if (!string.IsNullOrEmpty(savedAddressItem.Purpose))
             {
                addressPurpose = IFCAddressType.UserDefined;     // set this as default value
-               if (string.Compare(savedAddressItem.Purpose, "OFFICE", true) == 0)
+               if (string.Equals(savedAddressItem.Purpose, "OFFICE", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.Office;
-               else if (string.Compare(savedAddressItem.Purpose, "SITE", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "SITE", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.Site;
-               else if (string.Compare(savedAddressItem.Purpose, "HOME", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "HOME", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.Home;
-               else if (string.Compare(savedAddressItem.Purpose, "DISTRIBUTIONPOINT", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "DISTRIBUTIONPOINT", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.DistributionPoint;
-               else if (string.Compare(savedAddressItem.Purpose, "USERDEFINED", true) == 0)
+               else if (string.Equals(savedAddressItem.Purpose, "USERDEFINED", StringComparison.OrdinalIgnoreCase))
                   addressPurpose = Toolkit.IFCAddressType.UserDefined;
             }
 

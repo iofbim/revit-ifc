@@ -85,13 +85,13 @@ namespace Revit.IFC.Export.Utility
          if (string.IsNullOrEmpty(containerName))
             return (ElementId.InvalidElementId, null);
 
-         if (containerName.Equals("IFCPROJECT", StringComparison.CurrentCultureIgnoreCase))
+         if (containerName.Equals("IFCPROJECT", StringComparison.OrdinalIgnoreCase))
             return (ElementId.InvalidElementId, ExporterCacheManager.ProjectHandle);
 
-         if (containerName.Equals("IFCSITE", StringComparison.CurrentCultureIgnoreCase))
+         if (containerName.Equals("IFCSITE", StringComparison.OrdinalIgnoreCase))
             return (ElementId.InvalidElementId, ExporterCacheManager.SiteExportInfo.SiteHandle);
 
-         if (containerName.Equals("IFCBUILDING", StringComparison.CurrentCultureIgnoreCase))
+         if (containerName.Equals("IFCBUILDING", StringComparison.OrdinalIgnoreCase))
             return (ElementId.InvalidElementId, ExporterCacheManager.BuildingHandle);
 
          // Find Level that is designated as the override by iterating through all the Levels for the name match

@@ -629,7 +629,7 @@ namespace Revit.IFC.Export.Utility
 
          if (!string.IsNullOrEmpty(userDefName))
          {
-            string capitalName = NamingUtil.RemoveSpaces(userDefName.ToUpper());
+            string capitalName = NamingUtil.RemoveSpaces(userDefName.ToUpperInvariant());
             ExporterCacheManager.UnitsCache.RegisterUserDefinedUnit(capitalName, derivedUnitHnd);
          }
 
@@ -711,7 +711,7 @@ namespace Revit.IFC.Export.Utility
 
          string cobieName;
          if (!CobieUnitNameMapping.TryGetValue(unitName, out cobieName))
-            cobieName = unitName.ToLower();
+            cobieName = unitName.ToLowerInvariant();
 
          return cobieName;
       }

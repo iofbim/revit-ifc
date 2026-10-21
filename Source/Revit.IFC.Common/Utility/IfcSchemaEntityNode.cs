@@ -248,7 +248,7 @@ namespace Revit.IFC.Common.Utility
       public bool CheckChildNode(string entityName)
       {
          IfcSchemaEntityNode node = this;
-         if (string.Compare(node.Name, entityName, ignoreCase: true) == 0)
+         if (string.Equals(node.Name, entityName, StringComparison.OrdinalIgnoreCase))
             return true;
 
          if (node.subType == null)
