@@ -66,9 +66,21 @@ namespace Revit.IFC.Export.Exporter.PropertySet.Calculators
       public override bool Calculate(ExporterIFC exporterIFC, IFCExportBodyParams extrusionCreationData,
          Element element, ElementType elementType, EntryMap entryMap)
       {
+         m_ProjectType = null;
+
          // A value authored in Revit always takes precedence.
-         ParameterUtil.GetStringValueFromElementOrSymbol(element, entryMap.RevitParameterName,
-            out m_ProjectType, entryMap.CompatibleRevitParameterName);
+         //
+         // The parameter is read directly rather than through
+         // ParameterUtil.GetStringValueFromElementOrSymbol, because on this release that
+         // helper ends up calling the parameterless Parameter.AsValueString(), which
+         // formats the value through the document and starts a transaction to do so.
+         // That is not allowed here: property calculators run inside the export
+         // transaction, and Revit aborts the whole export with "There has been an
+         // unrecoverable error during export". The 2027 line is unaffected because its
+         // helper passes the document explicitly. Reading AsString() for a string
+         // parameter needs no transaction.
+         m_ProjectType = GetStringParameter(element, entryMap?.RevitParameterName)
+            ?? GetStringParameter(element, entryMap?.CompatibleRevitParameterName);
          if (!string.IsNullOrWhiteSpace(m_ProjectType))
             return true;
 
@@ -77,6 +89,38 @@ namespace Revit.IFC.Export.Exporter.PropertySet.Calculators
          m_ProjectType = epysActorInfo?.ProjectType;
 
          return !string.IsNullOrWhiteSpace(m_ProjectType);
+      }
+
+      /// <summary>
+      /// Reads a string parameter of an element by name, without formatting it through
+      /// the document.
+      /// </summary>
+      /// <param name="element">The element to read from.</param>
+      /// <param name="parameterName">The user visible parameter name.</param>
+      /// <returns>The value, or null when absent, empty or not a string parameter.</returns>
+      private static string GetStringParameter(Element element, string parameterName)
+      {
+         if (element == null || string.IsNullOrWhiteSpace(parameterName))
+            return null;
+
+         Parameter parameter;
+         try
+         {
+            parameter = element.LookupParameter(parameterName);
+         }
+         catch (Autodesk.Revit.Exceptions.ApplicationException)
+         {
+            return null;
+         }
+
+         // Only string parameters can be read without a transaction; anything else would
+         // need AsValueString() to format it, which is what must be avoided here.
+         if (parameter == null || !parameter.HasValue
+            || parameter.StorageType != StorageType.String)
+            return null;
+
+         string value = parameter.AsString();
+         return string.IsNullOrWhiteSpace(value) ? null : value;
       }
 
       /// <summary>
