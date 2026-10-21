@@ -2834,18 +2834,34 @@ namespace Revit.IFC.Export.Exporter
          // and carries no E-PYS attributes. Some checkers require every IfcOrganization in
          // the file to satisfy the E-PYS requirements, so this can be opted into.
          EPYSActorInfo epysActorInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
-         IFCAnyHandle developer;
+         IFCAnyHandle developer = null;
          if (epysActorInfo != null && epysActorInfo.ApplyToApplicationDeveloper)
          {
-            IFCAnyHandle developerRole = CreateEPYSActorRole(file, epysActorInfo.OrganizationRole,
-               epysActorInfo.OrganizationUserDefinedRole, epysActorInfo.OrganizationRoleDescription);
+            // The E-PYS attributes are supplementary: if any of these handles cannot be
+            // created, fall back to the plain IfcOrganization rather than letting the
+            // exception escape. An exception here propagates out of the export and Revit
+            // reports only "There has been an unrecoverable error during export", naming
+            // neither the file nor the cause.
+            try
+            {
+               IFCAnyHandle developerRole = CreateEPYSActorRole(file, epysActorInfo.OrganizationRole,
+                  epysActorInfo.OrganizationUserDefinedRole, epysActorInfo.OrganizationRoleDescription);
 
-            developer = IFCInstanceExporter.CreateOrganization(file,
-               epysActorInfo.OrganizationIdentification, productFullName, null,
-               developerRole != null ? [ developerRole ] : null,
-               CreateEPYSOrganizationAddresses(file, epysActorInfo));
+               developer = IFCInstanceExporter.CreateOrganization(file,
+                  epysActorInfo.OrganizationIdentification, productFullName, null,
+                  developerRole != null ? [ developerRole ] : null,
+                  CreateEPYSOrganizationAddresses(file, epysActorInfo));
+            }
+            catch (Exception ex)
+            {
+               developer = null;
+               document?.Application?.WriteJournalComment(
+                  "IFC E-PYS: failed to create the application developer IfcOrganization "
+                  + "with the E-PYS attributes, falling back to the default: " + ex.ToString(), true);
+            }
          }
-         else
+
+         if (developer == null)
          {
             developer = IFCInstanceExporter.CreateOrganization(file, null, productFullName, null, null, null);
          }
