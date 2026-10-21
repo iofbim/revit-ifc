@@ -122,6 +122,12 @@ namespace Revit.IFC.Export.Utility
 
       public COBieProjectInfo COBieProjectInfo { get; set; }
 
+      /// <summary>
+      /// E-PYS (EK-7) actor information used to populate IfcPerson, IfcOrganization and
+      /// IfcPersonAndOrganization. Null when the E-PYS requirements are not in use.
+      /// </summary>
+      public EPYSActorInfo EPYSActorInfo { get; set; }
+
       public IFCFileHeaderItem FileHeaderItem 
       { 
          get 
@@ -611,6 +617,25 @@ namespace Revit.IFC.Export.Utility
          cache.GeoRefEPSGCode = OptionsUtil.GetNamedStringOption(options, "GeoRefEPSGCode");
          cache.GeoRefGeodeticDatum = OptionsUtil.GetNamedStringOption(options, "GeoRefGeodeticDatum");
          cache.GeoRefMapUnit = OptionsUtil.GetNamedStringOption(options, "GeoRefMapUnit");
+
+         // E-PYS (EK-7) actor information, serialized as JSON by the export setup UI.
+         string epysActorInfoStr = OptionsUtil.GetNamedStringOption(options, "EPYSActorInfo");
+         if (!string.IsNullOrWhiteSpace(epysActorInfoStr))
+         {
+            try
+            {
+               EPYSActorInfo epysActorInfo = new EPYSActorInfo(epysActorInfoStr);
+               if (epysActorInfo.UseEPYSActorInfo)
+                  cache.EPYSActorInfo = epysActorInfo;
+            }
+            catch (Newtonsoft.Json.JsonException)
+            {
+               // A malformed option must not abort the export; the E-PYS information is
+               // simply treated as absent, and the export falls back to the default
+               // IfcPerson/IfcOrganization behaviour.
+               cache.EPYSActorInfo = null;
+            }
+         }
 
          return cache;
       }

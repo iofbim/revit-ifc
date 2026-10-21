@@ -1,4 +1,4 @@
-//
+﻿//
 // BIM IFC export alternate UI library: this library works with Autodesk(R) Revit(R) to provide an alternate user interface for the export of IFC files from Revit.
 // Copyright (C) 2016  Autodesk, Inc.
 // 
@@ -256,6 +256,11 @@ namespace BIM.IFC.Export.UI
                      return;
                   }
                }
+
+               // Check the E-PYS (EK-7) requirements before doing any export work, so that a
+               // non compliant export can be abandoned without having written a file.
+               if (!ValidateEPYSRequirements(selectedConfig, mainWindow.DocumentsToExport))
+                  return;
 
                // This option should be rarely used, and is only for consistency with old files.  As such, it is set by environment variable only.
                string use2009GUID = Environment.GetEnvironmentVariable("Assign2009GUIDToBuildingStoriesOnIFCExport");
@@ -809,6 +814,144 @@ namespace BIM.IFC.Export.UI
          retVal += SerializeXYZ(tr.BasisY) + ";";
          retVal += SerializeXYZ(tr.BasisZ) + ";";
          return retVal;
+      }
+
+      /// <summary>
+      /// Checks the E-PYS (EK-7) requirements and, when they are not met, lets the user
+      /// decide whether to continue.
+      /// </summary>
+      /// <param name="selectedConfig">The export configuration being used.</param>
+      /// <param name="documentsToExport">The documents that are about to be exported.</param>
+      /// <returns>True to continue the export, false to abandon it.</returns>
+      static private bool ValidateEPYSRequirements(IFCExportConfiguration selectedConfig,
+         IList<Document> documentsToExport)
+      {
+         if (selectedConfig == null)
+            return true;
+
+         EPYSActorInfo actorInfo;
+         try
+         {
+            actorInfo = new EPYSActorInfo(selectedConfig.EPYSActorInfo);
+         }
+         catch (Newtonsoft.Json.JsonException)
+         {
+            // A configuration we cannot read is not something to block the export on.
+            return true;
+         }
+
+         // Validation is opt-in: it only applies when the user has turned the E-PYS actor
+         // information on and has not disabled the check.
+         if (!actorInfo.UseEPYSActorInfo || !actorInfo.ValidateOnExport)
+            return true;
+
+         List<string> errors = new List<string>(actorInfo.Validate());
+
+         // IfcProject.Name, IfcProject.Description and Pset_ProjectCommon.ProjectType can be
+         // authored in Revit, so they are validated per document rather than collected.
+         foreach (Document document in documentsToExport ?? new List<Document>())
+         {
+            ProjectInfo projectInfo = document?.ProjectInformation;
+            if (projectInfo == null)
+               continue;
+
+            string projectName = null;
+            string projectDescription = null;
+            try
+            {
+               // As per the IFC implementer's agreement the exporter takes IfcProject.Name
+               // from the project Number (and IfcProject.LongName from the project Name),
+               // so the EK-7 project code pattern must be checked against Number.
+               projectName = projectInfo.Number;
+               projectDescription = GetProjectParameterValue(projectInfo, "Description");
+            }
+            catch (Autodesk.Revit.Exceptions.ApplicationException)
+            {
+               // Leave the values null; they are then reported as missing.
+            }
+
+            string projectType = GetProjectParameterValue(projectInfo, EPYSProjectRequirements.ProjectTypeProperty);
+
+            // The E-PYS tab fills in whatever the Revit Project Information leaves blank,
+            // so validate the values that will actually be exported.
+            projectName = EPYSActorInfo.ResolveProjectValue(projectName, actorInfo.ProjectName);
+            projectDescription = EPYSActorInfo.ResolveProjectValue(projectDescription, actorInfo.ProjectDescription);
+            projectType = EPYSActorInfo.ResolveProjectValue(projectType, actorInfo.ProjectType);
+
+            foreach (string error in EPYSProjectRequirements.Validate(projectName, projectDescription, projectType))
+            {
+               string documentError = documentsToExport.Count > 1
+                  ? string.Format("{0} [{1}]", error, document.Title) : error;
+               if (!errors.Contains(documentError))
+                  errors.Add(documentError);
+            }
+         }
+
+         if (errors.Count == 0)
+            return true;
+
+         using (Autodesk.Revit.UI.TaskDialog taskDialog =
+            new Autodesk.Revit.UI.TaskDialog(Properties.Resources.EPYSValidationTitle))
+         {
+            taskDialog.MainInstruction = Properties.Resources.EPYSValidationMessage;
+            taskDialog.MainContent = string.Join(Environment.NewLine,
+               errors.Select(error => "\u2022 " + error));
+            taskDialog.ExpandedContent = Properties.Resources.EPYSValidationContinue;
+            // Point the user at who defines these requirements, since the missing values
+            // come from the E-PYS specification rather than from Revit.
+            taskDialog.FooterText = string.Format("<a href=\"{0}\">{1}</a> · {2}",
+               Properties.Resources.EPYSSupportUrl, Properties.Resources.EPYSSupportLink,
+               Properties.Resources.EPYSSupportMail);
+            taskDialog.MainIcon = Autodesk.Revit.UI.TaskDialogIcon.TaskDialogIconWarning;
+            taskDialog.TitleAutoPrefix = false;
+            taskDialog.CommonButtons =
+               TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No;
+            taskDialog.DefaultButton = TaskDialogResult.No;
+
+            return taskDialog.Show() == TaskDialogResult.Yes;
+         }
+      }
+
+      /// <summary>
+      /// Reads a text parameter of the project information by name.
+      /// </summary>
+      /// <param name="projectInfo">The project information element.</param>
+      /// <param name="parameterName">The parameter name.</param>
+      /// <returns>The parameter value, or null if it is absent or empty.</returns>
+      static private string GetProjectParameterValue(ProjectInfo projectInfo, string parameterName)
+      {
+         if (projectInfo == null || string.IsNullOrEmpty(parameterName))
+            return null;
+
+         // LookupParameter matches on the user visible parameter name. Pset_ProjectCommon
+         // property names are ASCII, so an ordinal fallback search is used below rather than
+         // a culture sensitive one, which on tr-TR would not fold "I" and "i" reliably.
+         Parameter parameter = projectInfo.LookupParameter(parameterName);
+         if (parameter == null)
+         {
+            foreach (Parameter candidate in projectInfo.Parameters)
+            {
+               if (string.Equals(candidate?.Definition?.Name, parameterName, StringComparison.OrdinalIgnoreCase))
+               {
+                  parameter = candidate;
+                  break;
+               }
+            }
+         }
+
+         if (parameter == null || !parameter.HasValue)
+            return null;
+
+         // Only read string parameters. Parameter.AsValueString() formats the value through
+         // the document and starts a transaction to do so, which is not allowed here: this
+         // runs from the export command outside the Revit API context, and Revit terminates
+         // with "Starting a transaction from an external application running outside of API
+         // context is not allowed".
+         if (parameter.StorageType != StorageType.String)
+            return null;
+
+         string value = parameter.AsString();
+         return string.IsNullOrWhiteSpace(value) ? null : value;
       }
 
       static public bool CanWriteFilesInDirectory(string directoryPath)

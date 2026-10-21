@@ -176,9 +176,13 @@ namespace Revit.IFC.Export.Toolkit
          }
          IFCAnyHandleUtil.SetAttribute(root, "Name", overrideName);
 
+         // Pass the supplied description as the original value, exactly as the Name above
+         // does. Passing null instead discards whatever the caller computed whenever an
+         // element is present, so a description that does not come from a Revit parameter
+         // (for example one supplied for IfcProject) could never be exported.
          string overrideDescription = description;
          if (element != null)
-            overrideDescription = NamingUtil.GetDescriptionOverride(root, element, null);
+            overrideDescription = NamingUtil.GetDescriptionOverride(root, element, description);
          IFCAnyHandleUtil.SetAttribute(root, "Description", overrideDescription);
       }
 
@@ -2611,7 +2615,10 @@ namespace Revit.IFC.Export.Toolkit
       {
          string organizationName = name ?? string.Empty;
 
-         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identifier" : "Id";
+         // IFC2x3 calls this attribute "Id"; IFC4 and later renamed it to "Identification".
+         // "Identifier" is not a valid attribute name in any schema, and setting it throws
+         // as soon as a non-null id is supplied.
+         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identification" : "Id";
 
          IFCAnyHandle organization = CreateInstance(file, IFCEntityType.IfcOrganization, null);
          IFCAnyHandleUtil.SetAttribute(organization, idAttribName, id);
@@ -2750,7 +2757,10 @@ namespace Revit.IFC.Export.Toolkit
           IList<string> middleNames, IList<string> prefixTitles, IList<string> suffixTitles,
           IList<IFCAnyHandle> actorRoles, IList<IFCAnyHandle> addresses)
       {
-         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identifier" : "Id";
+         // IFC2x3 calls this attribute "Id"; IFC4 and later renamed it to "Identification".
+         // "Identifier" is not a valid attribute name in any schema, and setting it throws
+         // as soon as a non-null id is supplied.
+         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identification" : "Id";
 
          IFCAnyHandle person = CreateInstance(file, IFCEntityType.IfcPerson, null);
          IFCAnyHandleUtil.SetAttribute(person, idAttribName, identifier);

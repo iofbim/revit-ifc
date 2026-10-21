@@ -1,4 +1,4 @@
-//
+﻿//
 // BIM IFC export alternate UI library: this library works with Autodesk(R) Revit(R) to provide an alternate user interface for the export of IFC files from Revit.
 // Copyright (C) 2012  Autodesk, Inc.
 // 
@@ -423,6 +423,17 @@ namespace Revit.IFC.Export.Utility
       public string COBieProjectInfo { get; set; } = "";
 
       #endregion     // COBieTab
+
+      // Items under the E-PYS Tab
+      #region EPYSTab
+
+      /// <summary>
+      /// E-PYS (EK-7) actor information for IfcPerson, IfcOrganization,
+      /// IfcPersonAndOrganization and IfcActorRole, as JSON (from a dedicated tab).
+      /// </summary>
+      public string EPYSActorInfo { get; set; } = "";
+
+      #endregion     // EPYSTab
 
       /// <summary>
       /// The name of the configuration.

@@ -4310,5 +4310,401 @@ namespace BIM.IFC.Export.UI.Properties {
                 return ResourceManager.GetString("VersionNumber", resourceCulture);
             }
         }
-    }
+            
+        /// <summary>
+        ///   Looks up a localized string similar to E-PYS.
+        /// </summary>
+        public static string EPYSTabName {
+            get {
+                return ResourceManager.GetString("EPYSTabName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply E-PYS actor information on export.
+        /// </summary>
+        public static string EPYSUseActorInfo {
+            get {
+                return ResourceManager.GetString("EPYSUseActorInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block the export when E-PYS requirements are not met.
+        /// </summary>
+        public static string EPYSValidateOnExport {
+            get {
+                return ResourceManager.GetString("EPYSValidateOnExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IfcPerson.
+        /// </summary>
+        public static string EPYSPersonGroup {
+            get {
+                return ResourceManager.GetString("EPYSPersonGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IfcOrganization.
+        /// </summary>
+        public static string EPYSOrganizationGroup {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identification (chamber reg. no).
+        /// </summary>
+        public static string EPYSPersonIdentification {
+            get {
+                return ResourceManager.GetString("EPYSPersonIdentification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Family name.
+        /// </summary>
+        public static string EPYSPersonFamilyName {
+            get {
+                return ResourceManager.GetString("EPYSPersonFamilyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Given name.
+        /// </summary>
+        public static string EPYSPersonGivenName {
+            get {
+                return ResourceManager.GetString("EPYSPersonGivenName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string EPYSPersonRole {
+            get {
+                return ResourceManager.GetString("EPYSPersonRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User defined role.
+        /// </summary>
+        public static string EPYSPersonUserDefinedRole {
+            get {
+                return ResourceManager.GetString("EPYSPersonUserDefinedRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role description.
+        /// </summary>
+        public static string EPYSPersonRoleDescription {
+            get {
+                return ResourceManager.GetString("EPYSPersonRoleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identification.
+        /// </summary>
+        public static string EPYSOrganizationIdentification {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationIdentification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string EPYSOrganizationName {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string EPYSOrganizationDescription {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string EPYSOrganizationRole {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User defined role.
+        /// </summary>
+        public static string EPYSOrganizationUserDefinedRole {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationUserDefinedRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role description.
+        /// </summary>
+        public static string EPYSOrganizationRoleDescription {
+            get {
+                return ResourceManager.GetString("EPYSOrganizationRoleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Addresses.
+        /// </summary>
+        public static string EPYSAddressGroup {
+            get {
+                return ResourceManager.GetString("EPYSAddressGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Street address.
+        /// </summary>
+        public static string EPYSStreetAddress {
+            get {
+                return ResourceManager.GetString("EPYSStreetAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Town.
+        /// </summary>
+        public static string EPYSCity {
+            get {
+                return ResourceManager.GetString("EPYSCity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string EPYSRegion {
+            get {
+                return ResourceManager.GetString("EPYSRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Postal code.
+        /// </summary>
+        public static string EPYSPostalCode {
+            get {
+                return ResourceManager.GetString("EPYSPostalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country.
+        /// </summary>
+        public static string EPYSCountry {
+            get {
+                return ResourceManager.GetString("EPYSCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telephone.
+        /// </summary>
+        public static string EPYSTelephone {
+            get {
+                return ResourceManager.GetString("EPYSTelephone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail.
+        /// </summary>
+        public static string EPYSElectronicMail {
+            get {
+                return ResourceManager.GetString("EPYSElectronicMail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *.
+        /// </summary>
+        public static string EPYSRequiredFieldMarker {
+            get {
+                return ResourceManager.GetString("EPYSRequiredFieldMarker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fields marked * are required by E-PYS..
+        /// </summary>
+        public static string EPYSRequiredFieldNote {
+            get {
+                return ResourceManager.GetString("EPYSRequiredFieldNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-PYS requirements not met.
+        /// </summary>
+        public static string EPYSValidationTitle {
+            get {
+                return ResourceManager.GetString("EPYSValidationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following information required by E-PYS is missing or invalid:.
+        /// </summary>
+        public static string EPYSValidationMessage {
+            get {
+                return ResourceManager.GetString("EPYSValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to continue the export anyway?.
+        /// </summary>
+        public static string EPYSValidationContinue {
+            get {
+                return ResourceManager.GetString("EPYSValidationContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The e-mail address is not valid..
+        /// </summary>
+        public static string EPYSInvalidEmail {
+            get {
+                return ResourceManager.GetString("EPYSInvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The telephone number is not valid..
+        /// </summary>
+        public static string EPYSInvalidTelephone {
+            get {
+                return ResourceManager.GetString("EPYSInvalidTelephone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IfcProject.
+        /// </summary>
+        public static string EPYSProjectGroup {
+            get {
+                return ResourceManager.GetString("EPYSProjectGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name (project code).
+        /// </summary>
+        public static string EPYSProjectName {
+            get {
+                return ResourceManager.GetString("EPYSProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long name.
+        /// </summary>
+        public static string EPYSProjectLongName {
+            get {
+                return ResourceManager.GetString("EPYSProjectLongName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string EPYSProjectDescription {
+            get {
+                return ResourceManager.GetString("EPYSProjectDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project type (Pset_ProjectCommon).
+        /// </summary>
+        public static string EPYSProjectType {
+            get {
+                return ResourceManager.GetString("EPYSProjectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phase.
+        /// </summary>
+        public static string EPYSProjectPhase {
+            get {
+                return ResourceManager.GetString("EPYSProjectPhase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values authored in the Revit Project Information take precedence; these fields only fill in what Revit leaves blank..
+        /// </summary>
+        public static string EPYSProjectNote {
+            get {
+                return ResourceManager.GetString("EPYSProjectNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Also apply to the application developer organization (Autodesk).
+        /// </summary>
+        public static string EPYSApplyToApplicationDeveloper {
+            get {
+                return ResourceManager.GetString("EPYSApplyToApplicationDeveloper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-PYS requirements by.
+        /// </summary>
+        public static string EPYSSupportText {
+            get {
+                return ResourceManager.GetString("EPYSSupportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I of BIM.
+        /// </summary>
+        public static string EPYSSupportLink {
+            get {
+                return ResourceManager.GetString("EPYSSupportLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://iofbim.io.
+        /// </summary>
+        public static string EPYSSupportUrl {
+            get {
+                return ResourceManager.GetString("EPYSSupportUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to admin@iofbim.io.
+        /// </summary>
+        public static string EPYSSupportMail {
+            get {
+                return ResourceManager.GetString("EPYSSupportMail", resourceCulture);
+            }
+        }
+}
 }

@@ -30,6 +30,9 @@
     <Compile Update="COBieProjectInfoTab.xaml.cs">
       <DependentUpon>COBieProjectInfoTab.xaml</DependentUpon>
     </Compile>
+    <Compile Update="EPYSActorInfoTab.xaml.cs">
+      <DependentUpon>EPYSActorInfoTab.xaml</DependentUpon>
+    </Compile>
     <Compile Update="IFCAddressInformationUI.xaml.cs">
       <DependentUpon>IFCAddressInformationUI.xaml</DependentUpon>
     </Compile>

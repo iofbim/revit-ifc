@@ -10,8 +10,8 @@ set "print=for /f %%^" in ("""") do echo(%%~""
 %print%    <Assembly>%2</Assembly>
 %print%    <AddInId>%3</AddInId>
 %print%    <FullClassName>BIM.IFC.Export.UI.IFCCommandOverrideApplication</FullClassName>
-%print%    <VendorId>ADSK</VendorId>
-%print%    <VendorDescription>Autodesk, www.autodesk.com</VendorDescription>
+%print%    <VendorId>IOFBIM</VendorId>
+%print%    <VendorDescription>I of BIM, https://iofbim.io</VendorDescription>
 %print%  </AddIn>
 %print%  <ManifestSettings>
 %print%     <UseRevitContext>False</UseRevitContext>

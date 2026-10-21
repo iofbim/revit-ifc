@@ -192,30 +192,33 @@ birleştirmeye çalışmayın.
 
 ---
 
-## Birleşik MSI (tek kurulum, birden çok Revit sürümü)
+## Sürüm başına MSI (her Revit sürümü için ayrı kurulum)
 
-`./build-epys-msi.sh` tek bir MSI üretir: her Revit sürümü için **ayrı bundle**,
-her biri kendi API'sine derlenmiş DLL'lerle. Revit yalnızca `PackageContents.xml`'i
-çalışan sürümle eşleşen bundle'ı yükler, bu yüzden dosya adları aynı olsa da
-çakışmazlar.
+`./build-epys-msi.sh` her Revit sürümü için **ayrı bir MSI** üretir. Her MSI kendi
+bundle'ını kurar ve kendi `UpgradeCode`'una sahiptir, bu yüzden sürümler yan yana
+kurulabilir: 2027'yi kurmak 2026'yı kaldırmaz, her biri yalnızca kendi yılının
+önceki sürümünü upgrade eder.
 
-    C:\ProgramData\Autodesk\ApplicationPlugins\
-      IFC 2026.bundle\Contents\2026\   <- Revit 2026 API'sine derli
-      IFC 2027.bundle\Contents\2027\   <- Revit 2027 API'sine derli
+    C:\ProgramData\Autodesk\ApplicationPlugins      IFC 2026.bundle\Contents6\   <- Revit 2026 API'sine derli
+      IFC 2027.bundle\Contents7\   <- Revit 2027 API'sine derli
 
 Parçalar:
 
 | Dosya | İşi |
 |---|---|
-| `Install/RevitIFCSetupWix/ProductMulti.wxs` | birleşik MSI'ın WiX kaynağı (sürüm başına bir `Feature`) |
-| `build-epys-msi.sh` | derler, doğrular, paketler |
+| `Install/RevitIFCSetupWix/ProductVersion.wxs` | tek, parametreli WiX kaynağı — her sürümün MSI'ını bu üretir |
+| `build-epys-msi.sh` | derler, doğrular, sürüm başına paketler |
 | `Install/epys-stage/<yıl>/` | sürüm başına derlenmiş DLL'ler |
 | `Install/epys-manifests/<yıl>/` | sürüm başına `PackageContents.xml` + `Revit.IFC.addin` |
 
 Kullanım:
 
-    ./build-epys-msi.sh --stage    # her dalı derleyip yeniden stage'ler, sonra paketler
-    ./build-epys-msi.sh            # mevcut stage'den paketler
+    ./build-epys-msi.sh --stage         # her dalı derleyip yeniden stage'ler, sonra paketler
+    ./build-epys-msi.sh                 # mevcut stage'den hepsini paketler
+    ./build-epys-msi.sh 2027            # yalnızca o sürümü paketler
+    ./build-epys-msi.sh --stage 2027    # yalnızca o sürümü yeniden derleyip paketler
+
+Çıktı: `Install/Releasex64/RevitIFC-EPYS-<yıl>-<sürüm>.msi`
 
 `--stage` her sürümün dalını sırayla checkout edip derler, sonra başladığınız dala
 döner. Çalışma alanı kirliyse durur (dal değiştirmek değişikliklerinizi bozar),
@@ -223,27 +226,35 @@ bu yüzden önce commit veya stash edin.
 
 Betik paketlemeden **önce** şunları doğrular; biri tutmazsa durur:
 
-- her sürüm için 7 zorunlu DLL ve 3 dil satellite'ı mevcut mu
+- her sürüm için 7 zorunlu DLL (sürümün doğru `Revit.IFC.Common*` adı dahil) ve
+  3 dil satellite'ı mevcut mu
 - `PackageContents.xml` ve `Revit.IFC.addin` mevcut mu
-- iki sürümün `Revit.IFC.Export.dll`'i **birbirinden farklı** mı (aynı olmaları,
-  birinin yanlış daldan derlendiği anlamına gelir — Revit sessizce hiçbir şey
-  yüklemez, bu yüzden en değerli kontrol budur)
 - her `PackageContents.xml` yalnızca kendi `SeriesMin="R<yıl>"`ini bildiriyor mu
+- sürümlerin `Revit.IFC.Export.dll`'leri **birbirinden farklı** mı (aynı olmaları,
+  birinin yanlış daldan derlendiği anlamına gelir — Revit sessizce hiçbir şey
+  yüklemez, bu yüzden en değerli kontrol budur). Yalnızca tüm sürümler birlikte
+  paketlenirken çalışır; tek sürüm seçildiğinde karşılaştıracak ikinci sürüm yoktur.
 
-Yeni bir sürüm (örn. 2025) eklemek için: `build-epys-msi.sh` içindeki `VERSIONS`
-satırına `2025:epys/2025` ekleyin, `ProductMulti.wxs`'e 2026 bloğunu kopyalayıp
-yılı ve GUID'leri değiştirin, bir de `Feature_2025` tanımlayın.
+Yeni bir sürüm (örn. 2025) eklemek için `build-epys-msi.sh` içindeki `VERSIONS`
+listesine tek bir satır ekleyin — WiX kaynağına dokunmak gerekmez:
+
+    2025:epys/2025:25.x.y.z:Revit.IFC.Common.dll:<yeni-UpgradeCode>
+
+`UpgradeCode`'u bir kez üretip **asla değiştirmeyin**: Windows aynı ürünün önceki
+kurulumunu bununla tanır, değişirse upgrade etmek yerine ikinci bir kopya kurar.
+Mevcut kodlar sabit bir namespace'ten türetilmiştir (`uuid5`), yani kaybolurlarsa
+yeniden üretilebilirler.
 
 ### Sürüm başına farklılıklar (dikkat)
 
 - **Assembly adı**: `Revit.IFC.Common` 2026'da `Revit.IFC.Common.dll`, 2027'de
-  `Revit.IFC.Common.OpenSource.dll` olarak derlenir. `ProductMulti.wxs` ikisini
-  de doğru adla paketler; yeni sürüm eklerken kontrol edin.
+  `Revit.IFC.Common.OpenSource.dll` olarak derlenir. Ad `VERSIONS` listesinden
+  gelir ve `ProductVersion.wxs`'e parametre olarak geçirilir.
 - **`ProductCode` ve `UpgradeCode`**: `PackageContents.xml` içindeki `ProductCode`
-  her sürüm için ayrı (2026: `{4E8A1D62-...}`, 2027: `{B3D7E41C-...}`).
-- **Birleşik MSI'ın `UpgradeCode`'u** (`5F2B8E94-...`), `Product.wxs`'in ürettiği
-  tek sürümlük E-PYS MSI'ından **farklı**. Yani ikisi birbirini upgrade etmez;
-  her ikisini de kurmuşsanız biri diğerini kaldırmaz ama aynı dosyaları yazarlar
-  — birini kurmadan önce diğerini kaldırın.
+  her sürüm için ayrı (2026: `{4E8A1D62-...}`, 2027: `{B3D7E41C-...}`). MSI'ın
+  `UpgradeCode`'u da sürüm başına ayrıdır (2026: `{666432A7-...}`,
+  2027: `{A83F383D-...}`).
+- **Bileşen GUID'leri** yılı içerir (`...-4A01-<yıl>-...`), yani her sürümün MSI'ı
+  kendi bileşenlerine sahiptir ve biri diğerinin dosyalarını referans saymaz.
 - **`Resources` klasörü**: `PackageContents.xml` ikonu ve yardım dosyasını
   `.\Contents\Resources\` içinde arar, yani her bundle kendi kopyasını taşır.
