@@ -554,11 +554,14 @@ namespace Revit.IFC.Export.Utility
                if (epysActorInfo.UseEPYSActorInfo)
                   cache.EPYSActorInfo = epysActorInfo;
             }
-            catch (Newtonsoft.Json.JsonException)
+            catch (Exception)
             {
                // A malformed option must not abort the export; the E-PYS information is
                // simply treated as absent, and the export falls back to the default
-               // IfcPerson/IfcOrganization behaviour.
+               // IfcPerson/IfcOrganization behaviour. This catches every exception, not
+               // just JsonException: anything escaping here aborts the whole export with
+               // only the generic "unrecoverable error during export" message, which
+               // names neither the cause nor this file.
                cache.EPYSActorInfo = null;
             }
          }
