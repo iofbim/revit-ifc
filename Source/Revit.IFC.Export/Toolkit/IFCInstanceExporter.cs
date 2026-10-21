@@ -2638,7 +2638,11 @@ namespace Revit.IFC.Export.Toolkit
       {
          string organizationName = name ?? string.Empty;
 
-         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identifier" : "Id";
+         // IFC4 renamed IfcPerson.Id / IfcOrganization.Id to "Identification" (see IFC4.xsd);
+         // "Identifier" is not an attribute of either entity, and setting it throws
+         // "IFC: Failed to put attribute". Nothing upstream passed a non-null id here, so
+         // this stayed dormant until the E-PYS data supplied one.
+         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identification" : "Id";
 
          IFCAnyHandle organization = CreateInstance(file, IFCEntityType.IfcOrganization, null);
          IFCAnyHandleUtil.SetAttribute(organization, idAttribName, id);
@@ -2777,7 +2781,11 @@ namespace Revit.IFC.Export.Toolkit
           IList<string> middleNames, IList<string> prefixTitles, IList<string> suffixTitles,
           IList<IFCAnyHandle> actorRoles, IList<IFCAnyHandle> addresses)
       {
-         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identifier" : "Id";
+         // IFC4 renamed IfcPerson.Id / IfcOrganization.Id to "Identification" (see IFC4.xsd);
+         // "Identifier" is not an attribute of either entity, and setting it throws
+         // "IFC: Failed to put attribute". Nothing upstream passed a non-null id here, so
+         // this stayed dormant until the E-PYS data supplied one.
+         string idAttribName = (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4) ? "Identification" : "Id";
 
          IFCAnyHandle person = CreateInstance(file, IFCEntityType.IfcPerson, null);
          IFCAnyHandleUtil.SetAttribute(person, idAttribName, identifier);
