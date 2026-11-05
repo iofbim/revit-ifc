@@ -36,15 +36,14 @@ namespace Revit.IFC.Common.Utility
       /// The EK-7 pattern for IfcProject.Name, taken verbatim from ek7.ids.
       /// </summary>
       /// <remarks>
-      /// Written as eight digits or upper case letters, then groups of upper case letters
-      /// of length 2, 4, 2 and 3, then a three character alphanumeric group, then a two
-      /// and a three digit group; for example "12345678-AB-CDEF-GH-IJK-X1Y-01-123".
+      /// Written as two upper case letters, then the literal "PRJ", then six digits or
+      /// upper case letters; for example "AB-PRJ-12CD34".
       ///
       /// The character classes are Unicode categories and plain ASCII ranges, so this
       /// pattern behaves identically under every culture, including tr-TR.
       /// </remarks>
       public const string ProjectNamePattern =
-         @"[0-9\p{Lu}]{8}-\p{Lu}{2}-\p{Lu}{4}-\p{Lu}{2}-\p{Lu}{3}-[A-Z0-9]{3}-[0-9]{2}-[0-9]{3}";
+         @"[A-Z]{2}-PRJ-[0-9\p{Lu}]{6}";
 
       /// <summary>
       /// The property set that EK-7 requires IfcProject.ProjectType to be published in.
