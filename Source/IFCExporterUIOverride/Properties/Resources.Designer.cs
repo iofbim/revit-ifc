@@ -4706,5 +4706,68 @@ namespace BIM.IFC.Export.UI.Properties {
                 return ResourceManager.GetString("EPYSSupportMail", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to Georeferencing (IfcProjectedCRS / IfcMapConversion).
+        /// </summary>
+        public static string EPYSGeoRefGroup {
+            get {
+                return ResourceManager.GetString("EPYSGeoRefGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The export GeoReference tab has no field for these. A value entered here is exported; leave a field blank to keep the exporter's own behaviour..
+        /// </summary>
+        public static string EPYSGeoRefNote {
+            get {
+                return ResourceManager.GetString("EPYSGeoRefNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Datum.
+        /// </summary>
+        public static string EPYSCRSVerticalDatum {
+            get {
+                return ResourceManager.GetString("EPYSCRSVerticalDatum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map Projection.
+        /// </summary>
+        public static string EPYSCRSMapProjection {
+            get {
+                return ResourceManager.GetString("EPYSCRSMapProjection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map Zone.
+        /// </summary>
+        public static string EPYSCRSMapZone {
+            get {
+                return ResourceManager.GetString("EPYSCRSMapZone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale.
+        /// </summary>
+        public static string EPYSMapConversionScale {
+            get {
+                return ResourceManager.GetString("EPYSMapConversionScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scale must be a number greater than zero, for example 1.000002. Use a dot as the decimal separator..
+        /// </summary>
+        public static string EPYSInvalidScale {
+            get {
+                return ResourceManager.GetString("EPYSInvalidScale", resourceCulture);
+            }
+        }
+        
 }
 }

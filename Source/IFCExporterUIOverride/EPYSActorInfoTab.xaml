@@ -41,6 +41,46 @@
                     Text="{x:Static p:Resources.EPYSRequiredFieldNote}"
                     TextWrapping="Wrap" FontStyle="Italic" Opacity="0.75" Margin="0,2,0,4"/>
 
+         <!--
+            Georeferencing. The IFC export GeoReference tab has no field for these four,
+            so without them IfcProjectedCRS.VerticalDatum / .MapProjection / .MapZone and
+            IfcMapConversion.Scale can only be set through Revit project parameters.
+            As everywhere on this tab, a value entered here wins and a blank field leaves
+            the exporter's own behaviour untouched.
+         -->
+         <Label x:Name="label_GeoRefGroup" Content="{x:Static p:Resources.EPYSGeoRefGroup}" Style="{StaticResource GroupHeader}"/>
+         <TextBlock x:Name="textBlock_GeoRefNote" Text="{x:Static p:Resources.EPYSGeoRefNote}"
+                    TextWrapping="Wrap" FontStyle="Italic" Opacity="0.75" Margin="0,0,0,4"/>
+         <Grid x:Name="grid_GeoRef">
+            <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="200"/>
+               <ColumnDefinition Width="*"/>
+               <ColumnDefinition Width="16"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+               <RowDefinition Height="26"/>
+               <RowDefinition Height="26"/>
+               <RowDefinition Height="26"/>
+               <RowDefinition Height="26"/>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="label_CRSVerticalDatum" Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}"/>
+            <TextBox x:Name="textBox_CRSVerticalDatum" Grid.Row="0" Grid.Column="1" Style="{StaticResource FieldBox}"/>
+
+            <Label x:Name="label_CRSMapProjection" Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}"/>
+            <TextBox x:Name="textBox_CRSMapProjection" Grid.Row="1" Grid.Column="1" Style="{StaticResource FieldBox}"/>
+
+            <Label x:Name="label_CRSMapZone" Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}"/>
+            <TextBox x:Name="textBox_CRSMapZone" Grid.Row="2" Grid.Column="1" Style="{StaticResource FieldBox}"/>
+
+            <Label x:Name="label_MapConversionScale" Grid.Row="3" Grid.Column="0" Style="{StaticResource FieldLabel}"/>
+            <TextBox x:Name="textBox_MapConversionScale" Grid.Row="3" Grid.Column="1" Style="{StaticResource FieldBox}"
+                     LostFocus="textBox_MapConversionScale_LostFocus"/>
+            <TextBlock x:Name="textBlock_MapConversionScaleValidation" Grid.Row="3" Grid.Column="2"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Foreground="#FFFB0404" FontWeight="Bold" Visibility="Hidden"/>
+         </Grid>
+
          <!-- IfcProject -->
          <Label x:Name="label_ProjectGroup" Content="{x:Static p:Resources.EPYSProjectGroup}" Style="{StaticResource GroupHeader}"/>
          <TextBlock x:Name="textBlock_ProjectNote" Text="{x:Static p:Resources.EPYSProjectNote}"

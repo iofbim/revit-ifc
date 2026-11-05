@@ -1670,4 +1670,25 @@ Build: {1}
   <data name="EPYSSupportMail" xml:space="preserve">
     <value>admin@iofbim.io</value>
   </data>
+  <data name="EPYSGeoRefGroup" xml:space="preserve">
+    <value>Georeferencing (IfcProjectedCRS / IfcMapConversion)</value>
+  </data>
+  <data name="EPYSGeoRefNote" xml:space="preserve">
+    <value>The export GeoReference tab has no field for these. A value entered here is exported; leave a field blank to keep the exporter's own behaviour.</value>
+  </data>
+  <data name="EPYSCRSVerticalDatum" xml:space="preserve">
+    <value>Vertical Datum</value>
+  </data>
+  <data name="EPYSCRSMapProjection" xml:space="preserve">
+    <value>Map Projection</value>
+  </data>
+  <data name="EPYSCRSMapZone" xml:space="preserve">
+    <value>Map Zone</value>
+  </data>
+  <data name="EPYSMapConversionScale" xml:space="preserve">
+    <value>Scale</value>
+  </data>
+  <data name="EPYSInvalidScale" xml:space="preserve">
+    <value>The scale must be a number greater than zero, for example 1.000002. Use a dot as the decimal separator.</value>
+  </data>
 </root>

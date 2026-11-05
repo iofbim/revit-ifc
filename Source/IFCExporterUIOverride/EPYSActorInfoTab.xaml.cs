@@ -183,6 +183,12 @@ namespace BIM.IFC.Export.UI
          string marker = Properties.Resources.EPYSRequiredFieldMarker;
 
          // EK-7 requires IfcProject Name, Description and Pset_ProjectCommon.ProjectType.
+         // Georeferencing: none of these are EK-7 mandatory attributes, so no marker.
+         label_CRSVerticalDatum.Content = Properties.Resources.EPYSCRSVerticalDatum;
+         label_CRSMapProjection.Content = Properties.Resources.EPYSCRSMapProjection;
+         label_CRSMapZone.Content = Properties.Resources.EPYSCRSMapZone;
+         label_MapConversionScale.Content = Properties.Resources.EPYSMapConversionScale;
+
          label_ProjectName.Content = Required(Properties.Resources.EPYSProjectName, marker);
          label_ProjectLongName.Content = Properties.Resources.EPYSProjectLongName;
          label_ProjectDescription.Content = Required(Properties.Resources.EPYSProjectDescription, marker);
@@ -333,6 +339,11 @@ namespace BIM.IFC.Export.UI
          checkBox_ValidateOnExport.IsChecked = m_ActorInfo.ValidateOnExport;
          checkBox_ApplyToApplicationDeveloper.IsChecked = m_ActorInfo.ApplyToApplicationDeveloper;
 
+         textBox_CRSVerticalDatum.Text = m_ActorInfo.CRSVerticalDatum ?? string.Empty;
+         textBox_CRSMapProjection.Text = m_ActorInfo.CRSMapProjection ?? string.Empty;
+         textBox_CRSMapZone.Text = m_ActorInfo.CRSMapZone ?? string.Empty;
+         textBox_MapConversionScale.Text = m_ActorInfo.MapConversionScale ?? string.Empty;
+
          textBox_ProjectName.Text = m_ActorInfo.ProjectName ?? string.Empty;
          textBox_ProjectLongName.Text = m_ActorInfo.ProjectLongName ?? string.Empty;
          textBox_ProjectDescription.Text = m_ActorInfo.ProjectDescription ?? string.Empty;
@@ -409,6 +420,11 @@ namespace BIM.IFC.Export.UI
          m_ActorInfo.ValidateOnExport = checkBox_ValidateOnExport.IsChecked == true;
          m_ActorInfo.ApplyToApplicationDeveloper = checkBox_ApplyToApplicationDeveloper.IsChecked == true;
 
+         m_ActorInfo.CRSVerticalDatum = Trimmed(textBox_CRSVerticalDatum.Text);
+         m_ActorInfo.CRSMapProjection = Trimmed(textBox_CRSMapProjection.Text);
+         m_ActorInfo.CRSMapZone = Trimmed(textBox_CRSMapZone.Text);
+         m_ActorInfo.MapConversionScale = Trimmed(textBox_MapConversionScale.Text);
+
          m_ActorInfo.ProjectName = Trimmed(textBox_ProjectName.Text);
          m_ActorInfo.ProjectLongName = Trimmed(textBox_ProjectLongName.Text);
          m_ActorInfo.ProjectDescription = Trimmed(textBox_ProjectDescription.Text);
@@ -479,6 +495,20 @@ namespace BIM.IFC.Export.UI
       void comboBox_OrganizationRole_SelectionChanged(object sender, SelectionChangedEventArgs e)
       {
          UpdateEnabledState();
+      }
+
+      void textBox_MapConversionScale_LostFocus(object sender, RoutedEventArgs e)
+      {
+         m_ActorInfo.MapConversionScale = Trimmed(textBox_MapConversionScale.Text);
+
+         // Blank is valid and means "not set": the exporter then keeps its own unit-ratio
+         // calculation. Only a value that is present but unusable is flagged.
+         double? scale = m_ActorInfo.GetMapConversionScale();
+         bool isValid = string.IsNullOrWhiteSpace(m_ActorInfo.MapConversionScale)
+            || (scale.HasValue && scale.Value > 0.0);
+
+         ShowValidation(textBlock_MapConversionScaleValidation, isValid,
+            Properties.Resources.EPYSInvalidScale);
       }
 
       void textBox_Telephone_LostFocus(object sender, RoutedEventArgs e)

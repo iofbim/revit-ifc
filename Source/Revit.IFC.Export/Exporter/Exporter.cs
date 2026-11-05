@@ -4175,7 +4175,19 @@ namespace Revit.IFC.Export.Exporter
             (_, crsMapProjection) = ParameterUtil.GetStringValueFromElement(projectInfo, false, "IfcProjectedCRS.MapProjection", "ProjectGlobalPositioning.CRSMapProjection");
 
             (_, crsMapZone) = ParameterUtil.GetStringValueFromElement(projectInfo, false, "IfcProjectedCRS.MapZone", "ProjectGlobalPositioning.CRSMapZone");
-            
+
+            // The export GeoReference tab has no field for these three, so they could
+            // otherwise only be set through Revit project parameters. A value on the
+            // E-PYS tab wins; a blank field leaves the parameter value in place.
+            EPYSActorInfo epysCrsInfo = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo;
+            if (epysCrsInfo != null)
+            {
+               crsVerticalDatum = EPYSActorInfo.ResolveProjectValue(crsVerticalDatum, epysCrsInfo.CRSVerticalDatum);
+               crsMapProjection = EPYSActorInfo.ResolveProjectValue(crsMapProjection, epysCrsInfo.CRSMapProjection);
+               crsMapZone = EPYSActorInfo.ResolveProjectValue(crsMapZone, epysCrsInfo.CRSMapZone);
+            }
+
+
             //string defaultEPSGCode = "EPSG:3857";     // Default to EPSG:3857, which is the commonly used ProjectedCR as in GoogleMap, OpenStreetMap
             crsMapUnitStr = ExporterCacheManager.ExportOptionsCache.GeoRefMapUnit;
             (string projectedCRSName, string projectedCRSDesc, string epsgCode, string geodeticDatum, string uom) crsInfo = (null, null, null, null, null);
@@ -4314,8 +4326,17 @@ namespace Revit.IFC.Export.Exporter
          northings = UnitUtils.ConvertFromInternalUnits(northings, utId);
          orthogonalHeight = UnitUtils.ConvertFromInternalUnits(orthogonalHeight, utId);
 
+         // A scale on the E-PYS tab wins over the Revit parameter, which in turn wins over
+         // the unit-ratio calculation below. A blank field parses to null and changes
+         // nothing, so the existing behaviour is kept unless a scale is actually entered.
+         double? epysScale = ExporterCacheManager.ExportOptionsCache.EPYSActorInfo?.GetMapConversionScale();
+
          (_, double dblVal) = ParameterUtil.GetDoubleValueFromElement(projectInfo, "ProjectGlobalPositioning.Scale");
-         if (dblVal > MathUtil.Eps)
+         if (epysScale.HasValue && epysScale.Value > MathUtil.Eps)
+         {
+            scale = epysScale.Value;
+         }
+         else if (dblVal > MathUtil.Eps)
          {
             scale = dblVal;
          }

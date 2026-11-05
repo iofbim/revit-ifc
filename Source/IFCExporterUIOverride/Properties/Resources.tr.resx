@@ -249,4 +249,25 @@
   <data name="EPYSSupportMail" xml:space="preserve">
     <value>admin@iofbim.io</value>
   </data>
+  <data name="EPYSGeoRefGroup" xml:space="preserve">
+    <value>Coğrafi referans (IfcProjectedCRS / IfcMapConversion)</value>
+  </data>
+  <data name="EPYSGeoRefNote" xml:space="preserve">
+    <value>Dışa aktarma menüsündeki Coğrafi Referans sekmesinde bu alanlar yoktur. Buraya girilen değer dışa aktarılır; boş bırakılan alan için mevcut davranış korunur.</value>
+  </data>
+  <data name="EPYSCRSVerticalDatum" xml:space="preserve">
+    <value>Düşey datum</value>
+  </data>
+  <data name="EPYSCRSMapProjection" xml:space="preserve">
+    <value>Harita projeksiyonu</value>
+  </data>
+  <data name="EPYSCRSMapZone" xml:space="preserve">
+    <value>Harita dilimi</value>
+  </data>
+  <data name="EPYSMapConversionScale" xml:space="preserve">
+    <value>Ölçek</value>
+  </data>
+  <data name="EPYSInvalidScale" xml:space="preserve">
+    <value>Ölçek sıfırdan büyük bir sayı olmalıdır, örneğin 1.000002. Ondalık ayracı olarak nokta kullanın.</value>
+  </data>
 </root>
