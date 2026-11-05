@@ -172,6 +172,36 @@ namespace Revit.IFC.Common.Utility
       public string ProjectPhase { get; set; }
 
       /// <summary>
+      /// IfcProjectedCRS.VerticalDatum.
+      /// </summary>
+      /// <remarks>
+      /// This and the three that follow have no field on the export GeoReference tab, so
+      /// without them they can only be set through Revit project parameters. A blank value
+      /// leaves the exporter's existing behaviour untouched.
+      /// </remarks>
+      public string CRSVerticalDatum { get; set; }
+
+      /// <summary>
+      /// IfcProjectedCRS.MapProjection.
+      /// </summary>
+      public string CRSMapProjection { get; set; }
+
+      /// <summary>
+      /// IfcProjectedCRS.MapZone.
+      /// </summary>
+      public string CRSMapZone { get; set; }
+
+      /// <summary>
+      /// IfcMapConversion.Scale, as typed on the tab.
+      /// </summary>
+      /// <remarks>
+      /// Kept as a string so that "not set" stays distinct from zero: the exporter only
+      /// applies a scale greater than zero, and falls back to its unit-ratio calculation
+      /// otherwise. Use <see cref="GetMapConversionScale"/> to read it as a number.
+      /// </remarks>
+      public string MapConversionScale { get; set; }
+
+      /// <summary>
       /// Whether the E-PYS actor information should be used to populate the exported
       /// IfcPerson, IfcOrganization and IfcPersonAndOrganization.
       /// </summary>
@@ -260,6 +290,28 @@ namespace Revit.IFC.Common.Utility
       static string NullIfBlank(string value)
       {
          return string.IsNullOrWhiteSpace(value) ? null : value;
+      }
+
+      /// <summary>
+      /// The IfcMapConversion.Scale entered on the tab, as a number.
+      /// </summary>
+      /// <returns>
+      /// The scale, or null when the field is blank or does not parse. Null means "not
+      /// set", so the exporter keeps its own unit-ratio calculation.
+      /// </returns>
+      /// <remarks>
+      /// Parsed with the invariant culture: on a Turkish system the decimal separator is a
+      /// comma, so a value typed as "1.000002" would otherwise parse as 1000002.
+      /// </remarks>
+      public double? GetMapConversionScale()
+      {
+         if (string.IsNullOrWhiteSpace(MapConversionScale))
+            return null;
+
+         return double.TryParse(MapConversionScale.Trim(),
+            System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out double value)
+            ? value : (double?)null;
       }
 
       /// <summary>
